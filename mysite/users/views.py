@@ -3,9 +3,10 @@ from django.views.generic.detail import DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import get_object_or_404
+from django.shortcuts import render
 
 from .models import CustomUser
-
+from blog.models import Question
 # Создаем здесь представления.
 
 
@@ -30,3 +31,16 @@ class ShowProfilePageView(DetailView):
         page_user = get_object_or_404(CustomUser, id=self.kwargs['pk'])
         context['page_user'] = page_user
         return context
+
+
+def index(request):
+    """View function for home page of site."""
+
+    # Generate counts of some of the main objects
+    questions = Question.objects.all()
+
+    context = {
+        'questions': questions,
+    }
+
+    return render(request, 'home.html', context=context)

@@ -11,4 +11,7 @@
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">Log In</a>
 {% endif %}
+{% for q in  questions  %}
+    <li class="list-group-item text-center">{{ q.title }}</li>
+{% endfor %}
 {% endblock %}
