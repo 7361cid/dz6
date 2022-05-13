@@ -4,14 +4,16 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">Log Out</a></p>
-  <p><a href="{% url 'user' pk=user.id %}">Your page </a></p>
+  <p><a href="{% url 'logout' %}">Log Out </a>  <a href="{% url 'user' pk=user.id %}">Your page </a></p>
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">Log In</a>
+  <p><a href="{% url 'login' %}">Log In</a> <a href="{% url 'signup' %}">Sign in</a> </p>
 {% endif %}
 {% for q in  questions  %}
     <li class="list-group-item text-center">{{ q.title }}</li>
 {% endfor %}
+{% endblock %}
+
+{% block content_right %}
+ Trending
+  Тут будут вопросы в тренде
 {% endblock %}

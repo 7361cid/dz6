@@ -71,8 +71,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/users"
+LOGOUT_REDIRECT_URL = "/users"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
