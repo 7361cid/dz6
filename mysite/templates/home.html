@@ -6,14 +6,15 @@
 {% if user.is_authenticated %}
   <p><a href="{% url 'logout' %}">Log Out </a>  <a href="{% url 'user' pk=user.id %}">Your page </a></p>
 {% else %}
-  <p><a href="{% url 'login' %}">Log In</a> <a href="{% url 'signup' %}">Sign in</a> </p>
+  <p><a href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign in</button></p>
 {% endif %}
 {% for q in  questions  %}
     <li class="list-group-item text-center">{{ q.title }}</li>
 {% endfor %}
 {% endblock %}
 
-{% block content_right %}
+{% block sidebar %}
+<p><button onclick="window.location.href = '{% url 'question_new' %}';">Ask!</button></p>
  Trending
   Тут будут вопросы в тренде
 {% endblock %}

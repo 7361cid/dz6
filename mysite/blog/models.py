@@ -1,4 +1,5 @@
 from django.db import models
+
 from users.models import CustomUser
 
 
@@ -15,7 +16,7 @@ class Question(models.Model):
     """
     title = models.CharField(max_length=255)
     content = models.TextField(max_length=10000)
-    datetime = models.DateTimeField(u'Дата создания')
+    date = models.DateTimeField(auto_now_add=True, blank=True)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
 
