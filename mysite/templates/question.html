@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 {% block content %}
-    туть?
     <h2>{{ question.title }}</h2>
     <p>{{ question.content }}</p>
-    <p>{{ question.author }} {{ question.author.profile_pic }} </p>
+    <p>{{ question.author }} <img src="{{ question.author.profile_pic.url }}" height=100 width=100><br></p>
     <p>{{ question.tag }}</p>
+    ответы
+    <form action="" method="post"> {% csrf_token %}
+    {{ form.as_p }}
+        <input type="submit" value="Сохранить">
+    </form>
 {% endblock %}

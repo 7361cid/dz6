@@ -2,8 +2,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView
 from django import forms
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 
-from .models import Question, Tag
+from .models import Question, Tag, Answer
 
 
 class QuestionListView(ListView):
@@ -11,15 +12,33 @@ class QuestionListView(ListView):
     template_name = 'question_list.html'
 
 
-class QuestionDetailView(DetailView):
-    model = Question
-    template_name = 'question.html'
+class AskForm(forms.ModelForm):
+    content = forms.CharField(max_length=10000)
+
+    class Meta:
+        model = Answer
+        fields = ["content"]
+
+
+#class QuestionDetailView(DetailView):
+#    model = Question
+#    template_name = 'question.html'
+
+def question_with_answers_view(request, pk):
+    question = Question.objects.get(pk=pk)
+    context = {'question': question}
+    if request.method == 'POST':
+        form = AskForm(request.POST)
+        print(form)
+    else:
+        form = AskForm()
+        context['form'] = form
+    return render(request, 'question.html', context=context)
 
 
 class TagField(forms.Field):
     def to_python(self, value):
         """Normalize data to a Tag"""
-        # Return an empty list if no input was given.
         if not value:
             return Tag.objects.create(tag="")
         return Tag.objects.create(tag=value)
@@ -38,19 +57,15 @@ class QuestionForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super(QuestionForm, self).__init__(*args, **kwargs)
-        print(f"INIT? \n\n")
-     #   self.save()
 
     class Meta:
         model = Question
         fields = ["title", "content", "tag"]
 
     def save(self):
-        print(f"self {dir(self)} \n\n")
         data = self.cleaned_data
         question = Question(title=data['title'], content=data['content'],  # Create?
                             tag=data['tag'], author=self.user)
-        print(f"Questions2 {Question.objects.all()}\n\n")
         question.save()
 
 
@@ -67,6 +82,5 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         print(f"form_valid \n\n")
         form.save()
-
 
         return HttpResponseRedirect(self.success_url)

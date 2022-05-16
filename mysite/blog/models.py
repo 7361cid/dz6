@@ -22,3 +22,14 @@ class Question(models.Model):
 
     def get_absolute_url(self):
         return "/blog/question_list/%i/" % self.id
+
+
+class Answer(models.Model):
+    """
+     Ответ – содержание, автор, дата написания, флаг правильного ответа.
+    """
+    content = models.TextField(max_length=10000)
+    date = models.DateTimeField(auto_now_add=True, blank=True)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    right = models.BooleanField(default=0)
+    question_pk = models.IntegerField()
