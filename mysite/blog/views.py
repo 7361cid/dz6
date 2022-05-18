@@ -22,7 +22,8 @@ class AskForm(forms.ModelForm):
 
 def question_with_answers_view(request, pk):
     question = Question.objects.get(pk=pk)
-    context = {'question': question}
+    answers = Answer.objects.filter(question_pk=pk)
+    context = {'question': question, 'answers': answers}
     print(f"question.author {question.author} {type(question.author)}")
     if request.method == 'POST':
         form = AskForm(request.POST)

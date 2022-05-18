@@ -2,9 +2,32 @@
 {% block content %}
     <h2>{{ question.title }}</h2>
     <p>{{ question.content }}</p>
+    <p>{{ question.rating }}</p>
+    {% if user.is_authenticated %}
+        <form action="vote_for_question/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="vote" value="{{ True }}" />
+            <input type="hidden" name="image" value="{{ post.id }}" />
+            <button class="button" type="submit" > + </button>
+        </form>
+        <form action="vote_for_question/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="vote" value="{{ False }}" />
+            <input type="hidden" name="image" value="{{ post.id }}" />
+            <button class="button" type="submit" > - </button>
+        </form>
+    {% endif %}
     <p>{{ question.author }} <img src="{{ question.author.profile_pic.url }}" height=100 width=100><br></p>
     <p>{{ question.tag }}</p>
-    <p>{{ ответы }}</p>
+    {% for answer in answers %}
+        <p>{{ answer.content }}</p>
+        <p>{{ answer.date }}</p>
+        <p>{{ answer.author }}</p>
+        <p>{{ answer.right }}</p>
+    {% empty %}
+    <p>Нет ответов</p>
+
+    {% endfor %}
     {% if request.user.is_authenticated %}
         <p> Ваш ответ </p>
         <form action="" method="post"> {% csrf_token %}

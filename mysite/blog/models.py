@@ -19,6 +19,7 @@ class Question(models.Model):
     date = models.DateTimeField(auto_now_add=True, blank=True)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=0)
 
     def get_absolute_url(self):
         return "/blog/question_list/%i/" % self.id

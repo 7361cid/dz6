@@ -14,7 +14,9 @@
 {% endblock %}
 
 {% block sidebar %}
-<p><button onclick="window.location.href = '{% url 'question_new' %}';">Ask!</button></p>
+{% if request.user.is_authenticated %}
+    <p><button onclick="window.location.href = '{% url 'question_new' %}';">Ask!</button></p>
+{% endif %}
  Trending
   Тут будут вопросы в тренде
 {% endblock %}
