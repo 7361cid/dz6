@@ -20,19 +20,18 @@ class AskForm(forms.ModelForm):
         fields = ["content"]
 
 
-#class QuestionDetailView(DetailView):
-#    model = Question
-#    template_name = 'question.html'
-
 def question_with_answers_view(request, pk):
     question = Question.objects.get(pk=pk)
     context = {'question': question}
+    print(f"question.author {question.author} {type(question.author)}")
     if request.method == 'POST':
         form = AskForm(request.POST)
-        print(form)
+        if form.is_valid():
+            answer = Answer(content=form.cleaned_data['content'], author=request.user, question_pk=pk)
+            answer.save()
     else:
         form = AskForm()
-        context['form'] = form
+    context['form'] = form
     return render(request, 'question.html', context=context)
 
 
@@ -64,7 +63,7 @@ class QuestionForm(forms.ModelForm):
 
     def save(self):
         data = self.cleaned_data
-        question = Question(title=data['title'], content=data['content'],  # Create?
+        question = Question(title=data['title'], content=data['content'],
                             tag=data['tag'], author=self.user)
         question.save()
 
