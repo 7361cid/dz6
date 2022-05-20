@@ -2,9 +2,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView
 from django import forms
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
-from .models import Question, Tag, Answer
+from .models import Question, Tag, Answer, Vote
 
 
 class QuestionListView(ListView):
@@ -24,7 +25,6 @@ def question_with_answers_view(request, pk):
     question = Question.objects.get(pk=pk)
     answers = Answer.objects.filter(question_pk=pk)
     context = {'question': question, 'answers': answers}
-    print(f"question.author {question.author} {type(question.author)}")
     if request.method == 'POST':
         form = AskForm(request.POST)
         if form.is_valid():
@@ -34,6 +34,28 @@ def question_with_answers_view(request, pk):
         form = AskForm()
     context['form'] = form
     return render(request, 'question.html', context=context)
+
+
+@login_required
+def vote_for_question(request, pk):
+    if request.method == 'POST':
+        form = VoteForm(request.POST)
+        print(f"HERE {form}  {form.data}")
+        if form.is_valid():
+            vote = form.save(commit=False)
+            vote.user = request.user
+            print("HERE2")
+            # If changing vote or voting virst time
+            current_vote = Vote.objects.filter(question_pk=vote.question_pk, user=vote.user)
+
+            if not current_vote.exists():
+                vote.set_vote()
+
+            elif current_vote[0].vote != vote.vote:
+                updating_vote = Vote.objects.get(question_pk=vote.question_pk, user=vote.user)
+                updating_vote.set_vote(vote=vote.vote)
+
+    return redirect(f'blog/question_list/{pk}')
 
 
 class TagField(forms.Field):
@@ -69,6 +91,13 @@ class QuestionForm(forms.ModelForm):
         question.save()
 
 
+class VoteForm(forms.ModelForm):
+    class Meta:
+        model = Vote
+        fields = ['vote']   # ['vote', 'question']
+        widgets = {'vote': forms.HiddenInput()}
+
+
 class QuestionCreateView(LoginRequiredMixin, CreateView):
     form_class = QuestionForm
     template_name = 'question_new.html'
@@ -80,7 +109,6 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
-        print(f"form_valid \n\n")
         form.save()
 
         return HttpResponseRedirect(self.success_url)
