@@ -37,23 +37,34 @@ class Answer(models.Model):
     question_pk = models.IntegerField()
 
 
+def change_rating(question_pk, vote):
+    question = Question.objects.get(pk=question_pk)
+    if vote:
+        question.rating += 1
+    elif vote is False:
+        question.rating -= 1
+
+    question.save()
+
+
 class Vote(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     question_pk = models.IntegerField()
     vote = models.BooleanField(null=True)
 
     class Meta:
-        unique_together = ['user', 'question']
+        unique_together = ['user', 'question_pk']
 
-    def set_vote(self, vote=None):
+    def save(self, question_pk, *args, **kwargs):
+        self.question_pk = question_pk
+        super(Vote, self).save(*args, **kwargs)
+
+    def set_vote(self, question_pk, vote=None):
         if vote is not None:
             self.vote = vote
 
-        self.save()
+        self.save(question_pk)
+        print(f"LOG VOTE self.question_pk {self.question_pk} \n\n self.user {self.user} \n\n  "
+              f"self.vote {self.vote} \n\n")
 
-        if self.vote:
-            self.question.rating += 1
-        elif vote is False:
-            self.question.rating -= 1
-
-        self.question.rating.save()
+        change_rating(question_pk=question_pk, vote=self.vote)

@@ -40,22 +40,21 @@ def question_with_answers_view(request, pk):
 def vote_for_question(request, pk):
     if request.method == 'POST':
         form = VoteForm(request.POST)
-        print(f"HERE {form}  {form.data}")
         if form.is_valid():
             vote = form.save(commit=False)
             vote.user = request.user
-            print("HERE2")
             # If changing vote or voting virst time
-            current_vote = Vote.objects.filter(question_pk=vote.question_pk, user=vote.user)
+            current_vote = Vote.objects.filter(question_pk=pk, user=vote.user)
+            print(f"LOG {current_vote} ")
 
             if not current_vote.exists():
-                vote.set_vote()
+                vote.set_vote(question_pk=pk)
 
             elif current_vote[0].vote != vote.vote:
-                updating_vote = Vote.objects.get(question_pk=vote.question_pk, user=vote.user)
-                updating_vote.set_vote(vote=vote.vote)
+                updating_vote = Vote.objects.get(question_pk=pk, user=vote.user)
+                updating_vote.set_vote(question_pk=pk, vote=vote.vote)
 
-    return redirect(f'blog/question_list/{pk}')
+    return redirect(f'/blog/question_list/{pk}')
 
 
 class TagField(forms.Field):
