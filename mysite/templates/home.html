@@ -8,9 +8,28 @@
 {% else %}
   <p><a href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign in</button></p>
 {% endif %}
-{% for q in  questions  %}
-    <li class="list-group-item text-center">{{ q.title }}</li>
+
+
+{% for q in paginator.object_list %}
+     <li class="list-group-item text-center">{{ q.title }}</li>
 {% endfor %}
+
+    <ul class="pagination">
+    {% if paginator.has_previous %}
+        <li>
+            <span><a href="/home/{{ paginator.previous_page_number }}">Previous</a></span>
+        </li>
+    {% endif %}
+        <li class="">
+            <span>Page {{ paginator.number }} of {{ paginator.paginator.num_pages }}.</span>
+        </li>
+    {% if paginator.has_next %}
+        <li>
+            <span><a href="/home/{{ paginator.next_page_number }}">Next</a></span>
+        </li>
+    {% endif %}
+    </ul>
+
 {% endblock %}
 
 {% block sidebar %}
@@ -19,4 +38,7 @@
 {% endif %}
  Trending
   Тут будут вопросы в тренде
+  {% for q in  questions_trends  %}
+    <li class="list-group-item text-center"><a href="{% url 'question' pk=q.id %}">{{ q.title }}</a></li>
+{% endfor %}
 {% endblock %}

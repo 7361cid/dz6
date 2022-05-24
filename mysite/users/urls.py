@@ -5,4 +5,5 @@ urlpatterns = [
     path("signup/", SignUp.as_view(), name="signup"),
     path('/<int:pk>/', ShowProfilePageView.as_view(), name='user'),
     path("", index, name='home'),
+    path("home/<int:pk>/", index, name='home'),
 ]
