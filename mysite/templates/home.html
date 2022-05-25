@@ -9,6 +9,9 @@
   <p><a href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign in</button></p>
 {% endif %}
 
+<form action="{% url 'home' %}" method="get">
+  <input name="q" type="text" placeholder="Search...">
+</form>
 
 {% for q in paginator.object_list %}
      <li class="list-group-item text-center">{{ q.title }}</li>

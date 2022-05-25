@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 from .models import CustomUser
 from blog.models import Question
@@ -34,7 +35,13 @@ class ShowProfilePageView(DetailView):
 
 
 def index(request, pk=1):
-    questions = Question.objects.all()
+    search = request.GET.get('q')
+    if search:
+        questions = Question.objects.filter(
+            Q(title__icontains=search) | Q(content__icontains=search)
+        )
+    else:
+        questions = Question.objects.all()
     paginator = Paginator(questions, 20)  # Show 20 contacts per page.
     questions_trends = Question.objects.order_by('-rating')[:20]
     context = {
@@ -43,5 +50,4 @@ def index(request, pk=1):
         'paginator': paginator.page(pk)
     }
 
-    print(f"paginator {paginator.page(pk)} \n\n {dir(paginator.page(pk))} ")
     return render(request, 'home.html', context=context)
