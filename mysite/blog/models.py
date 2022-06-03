@@ -64,7 +64,5 @@ class Vote(models.Model):
             self.vote = vote
 
         self.save(question_pk)
-        print(f"LOG VOTE self.question_pk {self.question_pk} \n\n self.user {self.user} \n\n  "
-              f"self.vote {self.vote} \n\n")
 
         change_rating(question_pk=question_pk, vote=self.vote)

@@ -34,16 +34,23 @@ class ShowProfilePageView(DetailView):
         return context
 
 
-def index(request, pk=1):
+def index(request, pk=1, tag=''):
     search = request.GET.get('q')
-    if search:
-        questions = Question.objects.filter(
-            Q(title__icontains=search) | Q(content__icontains=search)
-        )
+    if tag:
+        questions = Question.objects.filter(Q(tag__icontains=tag)).order_by('-rating', '-date')
     else:
-        questions = Question.objects.all()
+        if search:
+            if search.startwith("tag:"):
+                tag = search.split('tag:')[-1]
+                questions = Question.objects.filter(Q(tag__icontains=tag)).order_by('-rating', '-date')
+            else:
+                questions = Question.objects.filter(Q(title__icontains=search) |
+                                                Q(content__icontains=search)).order_by('-rating', '-date')
+        else:
+            questions = Question.objects.all().order_by('-rating', '-date')
+
     paginator = Paginator(questions, 20)  # Show 20 contacts per page.
-    questions_trends = Question.objects.order_by('-rating')[:20]
+    questions_trends = Question.objects.order_by('-rating', '-date')[:20]
     context = {
         'questions': questions,
         'questions_trends': questions_trends,

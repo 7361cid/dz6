@@ -18,7 +18,7 @@
         </form>
     {% endif %}
     <p>{{ question.author }} <img src="{{ question.author.profile_pic.url }}" height=100 width=100><br></p>
-    <p>{{ question.tag }}</p>
+    <p><a href="{% url 'home' tag=question.tag %}">{{ question.tag }}</a></p>
     {% for answer in answers %}
         <p>{{ answer.content }}</p>
         <p>{{ answer.date }}</p>
