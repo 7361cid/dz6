@@ -3,20 +3,20 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<form name="search" action="#" method="get">
+    <input type="text" name="q" placeholder="Search"><button type="submit">GO</button>
+</form>
 {% if user.is_authenticated %}
   <p><a href="{% url 'logout' %}">Log Out </a>  <a href="{% url 'user' pk=user.id %}">Your page </a></p>
 {% else %}
   <p><a href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign in</button></p>
 {% endif %}
-
-<form action="{% url 'home' %}" method="get">
-  <input name="q" type="text" placeholder="Search...">
-</form>
-
+{% endblock %}
+{% block content_center %}
 {% for q in paginator.object_list %}
-     <li class="list-group-item text-center">{{ q.title }}</li>
+     <li class="list-group-item text-center"><a href="{% url 'question' pk=q.id %}">{{ q.title }}</a></li>
 {% endfor %}
-
+</div>
     <ul class="pagination">
     {% if paginator.has_previous %}
         <li>

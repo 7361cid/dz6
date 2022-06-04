@@ -6,21 +6,17 @@
 	<title>{% block title %}Django Auth Tutorial{% endblock %}</title>
 	<link rel="stylesheet" href="/media/css/styles.css" type="text/css">
 	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300" type="text/css">
-	<!--[if lt IE 9]>
-	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
 </head>
 <body>
 	<div id="wrapper">
 		<header>
 				<a id="logo" href="/"><img src="/media/images/logo.png" alt="Whitesquare logo" height="100" width="100"></a>
-				<form name="search" action="#" method="get">
-					<input type="text" name="q" placeholder="Search"><button type="submit">GO</button>
-				</form>
 				{% block content %} {% endblock %}
 		</header>
 		<nav></nav>
-		<div id="heading"></div>
+		<div id="heading">
+			{% block content_center %} {% endblock %}
+		</div>
 		<aside>
 			{% block sidebar %} {% endblock %}
 		</aside>

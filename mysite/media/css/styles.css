@@ -25,7 +25,7 @@ p {
 }
 
 #wrapper {
-	max-width: 960px;
+	max-width: 100%;
 	margin: auto;
 }
 
@@ -38,6 +38,11 @@ header {
 	height: 100px;
 }
 
+#heading {
+	max-width: 80%;
+	margin-right: 20%;
+}
+
 form[name="search"] {
 	float: left;
 	width: 250px;
@@ -45,7 +50,7 @@ form[name="search"] {
 
 aside {
 	float: right;
-	width: 250px;
+	width: 20%;
 }
 
 section {
