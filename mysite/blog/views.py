@@ -59,15 +59,18 @@ def vote_for_question(request, pk):
 
 class TagField(forms.Field):
     def to_python(self, value):
-        """Normalize data to a Tag"""
         if not value:
             return Tag.objects.create(tag="")
         return Tag.objects.create(tag=value)
 
     def validate(self, value):
-        super().validate(value)
-        if len(str(value).split(',')) > 3:
+        print("LOG validate")
+        tags_list = str(value).split(',')
+        if len(tags_list) > 3:
             raise forms.ValidationError("You can't use more than 3 tags")
+        tags_list2 = list(set(tags_list))
+        if sorted(tags_list) != sorted(tags_list2):
+            raise forms.ValidationError("You use equal tags")
 
 
 class QuestionForm(forms.ModelForm):
@@ -85,15 +88,27 @@ class QuestionForm(forms.ModelForm):
 
     def save(self):
         data = self.cleaned_data
-        question = Question(title=data['title'], content=data['content'],
-                            tag=data['tag'], author=self.user)
+        print(f"LOG TAG {data['tag']}")
+        tags = str(data['tag']).split(',')
+        if len(tags) == 1:
+            question = Question(title=data['title'], content=data['content'],
+                                tag=data['tag'], author=self.user)
+        elif len(tags) == 2:
+            tag2 = Tag.objects.create(tag=tags[1])
+            question = Question(title=data['title'], content=data['content'],
+                                tag=data['tag'], tag2=tag2, author=self.user)
+        else:
+            tag2 = Tag.objects.create(tag=tags[1])
+            tag3 = Tag.objects.create(tag=tags[1])
+            question = Question(title=data['title'], content=data['content'],
+                                tag=data['tag'], tag2=tag2, tag3=tag3, author=self.user)
         question.save()
 
 
 class VoteForm(forms.ModelForm):
     class Meta:
         model = Vote
-        fields = ['vote']   # ['vote', 'question']
+        fields = ['vote']  # ['vote', 'question']
         widgets = {'vote': forms.HiddenInput()}
 
 
