@@ -37,12 +37,13 @@ class ShowProfilePageView(DetailView):
 def index(request, pk=1, tag=''):
     search = request.GET.get('q')
     if tag:
-        questions = Question.objects.filter(Q(tag__icontains=tag)).order_by('-rating', '-date')
+        print(f"LOG {tag}")
+        questions = Question.objects.filter(Q(tag__tag__icontains=tag)).order_by('-rating', '-date')
     else:
         if search:
             if search.startwith("tag:"):
                 tag = search.split('tag:')[-1]
-                questions = Question.objects.filter(Q(tag__icontains=tag)).order_by('-rating', '-date')
+                questions = Question.objects.filter(Q(tag__tag__icontains=tag)).order_by('-rating', '-date')
             else:
                 questions = Question.objects.filter(Q(title__icontains=search) |
                                                 Q(content__icontains=search)).order_by('-rating', '-date')
