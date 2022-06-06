@@ -65,9 +65,9 @@ class TagField(forms.Field):
         return Tag.objects.create(tag=value)
 
     def validate(self, value):
-        """Check if value consists only of valid emails."""
-        # Use the parent's handling of required fields, etc.
         super().validate(value)
+        if len(str(value).split(',')) > 3:
+            raise forms.ValidationError("You can't use more than 3 tags")
 
 
 class QuestionForm(forms.ModelForm):
