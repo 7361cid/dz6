@@ -23,6 +23,11 @@
         <p>{{ answer.content }}</p>
         <p>{{ answer.date }}</p>
         <p>{{ answer.author }}</p>
+        {% if user == question.author %}
+        <a href="make_answer_right/{{ answer.id }}">
+        <button> This question Right? </button>
+        </a>
+        {% endif %}
         <p>{{ answer.right }}</p>
     {% empty %}
     <p>Нет ответов</p>

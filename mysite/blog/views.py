@@ -57,6 +57,17 @@ def vote_for_question(request, pk):
     return redirect(f'/blog/question_list/{pk}')
 
 
+@login_required
+def make_answer_right(request, pk, pk2):
+    if request.method == 'POST':
+        print(f"LOG PK  {pk2}")
+        for a in Answer.objects.all():
+            print(f"{a.pk}")
+        answer = Answer.objects.get(pk=pk2)
+        answer.right = True
+        answer.save()
+
+
 class TagField(forms.Field):
     def to_python(self, value):
         if not value:
@@ -81,6 +92,12 @@ class QuestionForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super(QuestionForm, self).__init__(*args, **kwargs)
+        tag_objects = Tag.objects.all()
+        if len(tag_objects) >= 2:
+            example = f"Tags examples: {str(tag_objects[0])}, {str(tag_objects[1])} "
+            self.fields['tag'].widget.attrs['placeholder'] = example
+        else:
+            self.fields['tag'].widget.attrs['placeholder'] = 'No tags created yet'
 
     class Meta:
         model = Question
