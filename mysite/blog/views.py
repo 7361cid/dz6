@@ -59,13 +59,12 @@ def vote_for_question(request, pk):
 
 @login_required
 def make_answer_right(request, pk, pk2):
-    if request.method == 'POST':
-        print(f"LOG PK  {pk2}")
-        for a in Answer.objects.all():
-            print(f"{a.pk}")
+    if Question.objects.get(pk=pk).author == request.user:
         answer = Answer.objects.get(pk=pk2)
         answer.right = True
         answer.save()
+
+    return redirect(f'/blog/question_list/{pk}')
 
 
 class TagField(forms.Field):
