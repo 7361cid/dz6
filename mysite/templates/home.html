@@ -3,13 +3,15 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<form name="search" action="#" method="get">
-    <input type="text" name="q" placeholder="Search"><button type="submit">GO</button>
-</form>
+<div class="search">
+    <form name="search" action="#" method="get">
+        <input type="text" name="q" placeholder="Search"><button type="submit">GO</button>
+    </form>
+</div>
 {% if user.is_authenticated %}
   <p><a href="{% url 'logout' %}">Log Out </a>  <a href="{% url 'user' pk=user.id %}">Your page </a></p>
 {% else %}
-  <p><a href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign in</button></p>
+  <div class="login"><a href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign up</button></div>
 {% endif %}
 {% endblock %}
 {% block content_center %}
@@ -23,11 +25,11 @@
             <span><a href="/home/{{ paginator.previous_page_number }}">Previous</a></span>
         </li>
     {% endif %}
-        <li class="">
+        <li class="pagination">
             <span>Page {{ paginator.number }} of {{ paginator.paginator.num_pages }}.</span>
         </li>
     {% if paginator.has_next %}
-        <li>
+        <li class="pagination">
             <span><a href="/home/{{ paginator.next_page_number }}">Next</a></span>
         </li>
     {% endif %}
@@ -38,9 +40,10 @@
 {% block sidebar %}
 {% if request.user.is_authenticated %}
     <p><button onclick="window.location.href = '{% url 'question_new' %}';">Ask!</button></p>
+{% else %}
+    <p><button onclick="window.location.href = '{% url 'login' %}';">Ask!</button></p>
 {% endif %}
- Trending
-  Тут будут вопросы в тренде
+<h1> Trending </h1>
   {% for q in  questions_trends  %}
     <li class="list-group-item text-center"><a href="{% url 'question' pk=q.id %}">{{ q.title }}</a></li>
 {% endfor %}

@@ -9,18 +9,14 @@
  <body>
   <div class="container">
    <div id="header">
-	   <a id="logo" href="/"><img src="/media/images/logo.png" alt="Whitesquare logo" height="100" width="100"></a>
+	   <a id="logo" href="/"><img src="/media/images/logo.png" alt="Whitesquare logo"></a>
 	   {% block content %} {% endblock %}
    </div>
    <div class="sidebar">
-        <aside>
-			{% block sidebar %} {% endblock %}
-		</aside>
+       {% block sidebar %} {% endblock %}
    </div>
    <div class="content">
- 	 <div id="heading">
-			{% block content_center %} {% endblock %}
-	 </div>
+       {% block content_center %} {% endblock %}
    </div>
 <div class="footer">&copy; Otus</div>
 </div>

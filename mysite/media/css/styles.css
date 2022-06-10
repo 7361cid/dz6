@@ -1,9 +1,12 @@
+
 body {
 	color: #8f8f8f;
 	font: 12px Tahoma, sans-serif;
 	background-color: #f8f8f8;
 	border-top: 5px solid #7e7e7e;
 	margin: 0;
+	height: 100%;
+    overflow: hidden;
 }
 input[type="text"] {
 	background-color: #f3f3f3;
@@ -31,33 +34,21 @@ p {
 
 #logo {
 	float: left;
+    max-width: 10vh;
+    height: auto;
 }
 
 
-#heading {
-	max-width: 80%;
-	margin-right: 20%;
-}
-
-form[name="search"] {
-	float: left;
-	width: 250px;
+.search {
+float: center;
 }
 
 li{list-style-position:inside;}
 
-aside {
-	float: right;
-	width: 150px;
-}
-
-section {
-	margin-left: 280px;
-	padding-bottom: 50px;
-}
 
 .container {
-    width: 600px; /* Ширина слоя */
+    width: 100vh; /* Ширина слоя */
+    height: 90vh;
     margin: 0 auto; /* Выравнивнить весь блок по центру */
     background: #f0f0f0; /* Цвет фона левой колонки */
    }
@@ -67,25 +58,26 @@ section {
     padding: 5px; /* Отступы внутри блока шапки */
     background: #8fa09b; /* Цвет фона шапки */
     color: #fff; /* Цвет текста */
-    height: 100px;
+    height: 10vh;
 }
    .sidebar {
-    width: 150px; /* Ширина блока */
+    width: 20%; /* Ширина блока */
+    height: 80%;
     float: right; /* Обтекание блока по правому краю */
    }
    .content {
-    width: 400px;
-    margin-right;: 100px; /* Отступ справа */
-    padding: 25px;
-    height: 500px;
+    width: 75%;
+    height: 80%;
     background: #fff; /* Цвет фона правого блока */
    }
    .footer {
-    width: 600px;
-    height: 50px;
+    width: 100vh;
+    height: 10vh;
     background: #8fa09b; /* Цвет фона нижнего блока-подвала */
     color: #fff; /* Цвет текста подвала */
-    position: relative;
-    float: left;
-    left: 30%;
+    margin:0 auto;
    }
+
+.pagination {
+    width: 80%;
+}
