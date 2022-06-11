@@ -12,6 +12,7 @@ input[type="text"] {
 	background-color: #f3f3f3;
 	border: 1px solid #e7e7e7;
 	height: 30px;
+	width: 100px;
 	color: #b2b2b2;
 	padding: 0 10px;
 	vertical-align: top;
@@ -39,10 +40,34 @@ p {
 }
 
 
+
 .search {
-float: center;
+    width: 300px; /* Ширина поля с кнопкой */
+    border: 1px solid #000; /* Параметры рамки */
+    min-height: 20px; /* Минимальная высота */
+   }
+input[type="search"] {
+    border: none; /* Убираем рамку */
+    outline: none; /* Убираем свечение в Chrome и Safari */
+    -webkit-appearance: none; /* Убираем рамку в Chrome и Safari */
+    width: 200px; /* Ширина поля */
+    vertical-align: middle; /* Выравнивание по середине */
+   }
+input[type="submit"] {
+    width: 30px; /* Ширина кнопки */
+    height: 20px; /* Высота кнопки */
+    border: none; /* Убираем рамку */
+   }
+
+
+.table_column {
+   width: 30vh;
+   float: center;
 }
 
+.login {
+    float: right;
+}
 li{list-style-position:inside;}
 
 
@@ -59,6 +84,11 @@ li{list-style-position:inside;}
     background: #8fa09b; /* Цвет фона шапки */
     color: #fff; /* Цвет текста */
     height: 10vh;
+
+}
+
+#header-left {
+    width: 20%;
 }
    .sidebar {
     width: 20%; /* Ширина блока */

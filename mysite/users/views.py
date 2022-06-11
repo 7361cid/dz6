@@ -41,7 +41,7 @@ def index(request, pk=1, tag=''):
         questions = Question.objects.filter(Q(tag__tag__icontains=tag)).order_by('-rating', '-date')
     else:
         if search:
-            if search.startwith("tag:"):
+            if search.startswith("tag:"):
                 tag = search.split('tag:')[-1]
                 questions = Question.objects.filter(Q(tag__tag__icontains=tag)).order_by('-rating', '-date')
             else:

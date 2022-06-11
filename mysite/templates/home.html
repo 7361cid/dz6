@@ -3,16 +3,28 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="search">
-    <form name="search" action="#" method="get">
-        <input type="text" name="q" placeholder="Search"><button type="submit">GO</button>
-    </form>
-</div>
-{% if user.is_authenticated %}
-  <p><a href="{% url 'logout' %}">Log Out </a>  <a href="{% url 'user' pk=user.id %}">Your page </a></p>
-{% else %}
-  <div class="login"><a href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign up</button></div>
-{% endif %}
+<table>
+        <tr>
+            <td class="table_column">
+                <a id="logo" href="/"><img src="/media/images/logo.png" alt="Whitesquare logo"></a>
+            </td>
+            <td class="table_column">
+                <form name="search" action="#" method="get">
+                    <div class="search">
+                      <input type="search" placeholder="Search" name="q">
+                      <input type="submit" value="GO">
+                    </div>
+                </form>
+            </td>
+            <td class="table_column">
+                {% if user.is_authenticated %}
+                  <div class="login"><a href="{% url 'logout' %}">Log Out </a>  <a href="{% url 'user' pk=user.id %}">Your page </a></div>
+                {% else %}
+                  <div class="login"><a href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign up</button></div>
+                {% endif %}
+            </td>
+        </tr>
+</table>
 {% endblock %}
 {% block content_center %}
 {% for q in paginator.object_list %}
