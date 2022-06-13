@@ -1,3 +1,4 @@
+SHELL=bin/bash
 prod:
     sudo apt install -y python3-pip
     sudo apt install -y python3-venv
