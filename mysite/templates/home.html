@@ -12,7 +12,7 @@
                 <form name="search" action="#" method="get">
                     <div class="search">
                       <input type="search" placeholder="Search" name="q">
-                      <input type="submit" value="GO">
+                      <input class="search_button"  type="submit" value="GO">
                     </div>
                 </form>
             </td>
@@ -27,9 +27,40 @@
 </table>
 {% endblock %}
 {% block content_center %}
-{% for q in paginator.object_list %}
-     <li class="list-group-item text-center"><a href="{% url 'question' pk=q.id %}">{{ q.title }}</a></li>
-{% endfor %}
+    <table class="table_questions">
+        {% for q in paginator.object_list %}
+            <tr>
+                <td class="table_question_data">
+                    <p>{{ q.rating }}</p>
+                    <p>Votes</p>
+                </td>
+                <td class="table_question_data">
+                    {% for k,v in answers.items %}
+                        {% if k == q.pk %}
+                        <p> {{ v }} </p>
+                        {% endif %}
+                    {% endfor %}
+                    <p>Answers</p>
+                </td>
+                <td class="table_question_data">
+                    <p><a href="{% url 'question' pk=q.id %}">{{ q.title }}</a></p>
+                    <p><button onclick="window.location.href = '{% url 'home' tag=q.tag %}';">{{ q.tag }}</button></p>
+                    {% if q.tag2 %}
+                        <p><button onclick="window.location.href = '{% url 'home' tag=q.tag2 %}';">{{ q.tag2 }}</button></p>
+                    {% endif %}
+                    {% if q.tag3 %}
+                        <p><button onclick="window.location.href = '{% url 'home' tag=q.tag3 %}';">{{ q.tag3 }}</button></p>
+                    {% endif %}
+                </td>
+                <td class="table_question_data">
+                    <p><a href="{% url 'user' pk=q.author.pk %}">{{ q.author}}</a></p>
+                    <p>asked {{ q.date}} </p>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
 </div>
     <ul class="pagination">
     {% if paginator.has_previous %}
@@ -56,7 +87,16 @@
     <p><button onclick="window.location.href = '{% url 'login' %}';">Ask!</button></p>
 {% endif %}
 <h1> Trending </h1>
+<table class="table_questions">
   {% for q in  questions_trends  %}
-    <li class="list-group-item text-center"><a href="{% url 'question' pk=q.id %}">{{ q.title }}</a></li>
-{% endfor %}
+    <tr>
+        <td class="table_question_data">
+            <p><button onclick="window.location.href = '{% url 'question' pk=q.id %}';">{{ q.rating }}</button></p>
+        </td>
+        <td class="table_question_data">
+            <p>{{ q.title }}</p>
+        </td>
+    </tr>
+  {% endfor %}
+</table>
 {% endblock %}

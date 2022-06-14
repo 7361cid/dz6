@@ -33,6 +33,8 @@ def question_with_answers_view(request, pk):
     else:
         form = AskForm()
     context['form'] = form
+    questions_trends = Question.objects.order_by('-rating', '-date')[:20]
+    context['questions_trends'] = questions_trends
     return render(request, 'question.html', context=context)
 
 
@@ -104,7 +106,6 @@ class QuestionForm(forms.ModelForm):
 
     def save(self):
         data = self.cleaned_data
-        print(f"LOG TAG {data['tag']}")
         tags = str(data['tag']).split(',')
         if len(tags) == 1:
             question = Question(title=data['title'], content=data['content'],
@@ -137,6 +138,12 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
         kwargs = super().get_form_kwargs(*args, **kwargs)
         kwargs['user'] = self.request.user
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        questions_trends = Question.objects.order_by('-rating', '-date')[:20]
+        ctx['questions_trends'] = questions_trends
+        return ctx
 
     def form_valid(self, form):
         form.save()

@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from .models import CustomUser
-from blog.models import Question
+from blog.models import Question, Answer
 
 
 class RegisterForm(UserCreationForm):
@@ -52,7 +52,12 @@ def index(request, pk=1, tag=''):
 
     paginator = Paginator(questions, 20)  # Show 20 contacts per page.
     questions_trends = Question.objects.order_by('-rating', '-date')[:20]
+    answers = {}
+    for q in questions:
+        answers[q.pk] = len(Answer.objects.filter(question_pk=q.pk))
+
     context = {
+        'answers': answers,  # Количество овтетов для каждого вопроса
         'questions': questions,
         'questions_trends': questions_trends,
         'paginator': paginator.page(pk)

@@ -5,8 +5,6 @@ body {
 	background-color: #f8f8f8;
 	border-top: 5px solid #7e7e7e;
 	margin: 0;
-	height: 100%;
-    overflow: hidden;
 }
 input[type="text"] {
 	background-color: #f3f3f3;
@@ -43,7 +41,6 @@ p {
 
 .search {
     width: 300px; /* Ширина поля с кнопкой */
-    border: 1px solid #000; /* Параметры рамки */
     min-height: 20px; /* Минимальная высота */
    }
 input[type="search"] {
@@ -51,18 +48,41 @@ input[type="search"] {
     outline: none; /* Убираем свечение в Chrome и Safari */
     -webkit-appearance: none; /* Убираем рамку в Chrome и Safari */
     width: 200px; /* Ширина поля */
+    height: 20px;
     vertical-align: middle; /* Выравнивание по середине */
    }
-input[type="submit"] {
+.search_button {
     width: 30px; /* Ширина кнопки */
     height: 20px; /* Высота кнопки */
     border: none; /* Убираем рамку */
    }
 
+input[name="tag"] {
+  width: 200px;
+}
+
+.invisible {
+    visibility: hidden;
+     height: 36px;
+}
 
 .table_column {
    width: 30vh;
    float: center;
+}
+
+.table_questions {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    border-collapse: collapse;
+   border: 0px solid grey;
+}
+
+.table_question_data {
+    border: 0px solid black;
+    width: 20vh;
+    text-align: center;
 }
 
 .login {
@@ -73,7 +93,7 @@ li{list-style-position:inside;}
 
 .container {
     width: 100vh; /* Ширина слоя */
-    height: 90vh;
+   /* height: 90vh; */
     margin: 0 auto; /* Выравнивнить весь блок по центру */
     background: #f0f0f0; /* Цвет фона левой колонки */
    }

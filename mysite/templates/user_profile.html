@@ -1,5 +1,27 @@
-{% load static %}
+{% extends 'base.html' %}
+{% block title %}Homepage{% endblock %}
+
 {% block content %}
+<table>
+        <tr>
+            <td class="table_column">
+                <a id="logo" href="/"><img src="/media/images/logo.png" alt="Whitesquare logo"></a>
+            </td>
+            <td class="table_column">
+            </td>
+            <td class="table_column">
+                {% if user.is_authenticated %}
+                  <div class="login"><a href="{% url 'logout' %}">Log Out </a>  <a href="{% url 'user' pk=user.id %}">Your page </a></div>
+                {% else %}
+                  <div class="login"><a href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign up</button></div>
+                {% endif %}
+            </td>
+        </tr>
+</table>
+{% endblock %}
+
+
+{% block content_center %}
 
     <div class="header-bar">
         <h1>Page {{ user.username }}</h1>
@@ -10,11 +32,10 @@
     {% if user.profile_pic %}
       <img src="{{ user.profile_pic.url }}" height=100 width=100><br><br>
     {% endif %}
-      <p><strong>Username:</strong> {{ MEDIA_URL }}</p><br><br>
       {% if user.id == profile.user.id %}
-      <a href="{% url 'edit_user_profile' profile.id %}"><button class="button">Edit</button></a>
+      форма редактирования
       {% endif %}
 
     </div>
 
-{% endblock content %}
+{% endblock %}
