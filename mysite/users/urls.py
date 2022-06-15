@@ -1,9 +1,9 @@
 from django.urls import path
-from .views import SignUp, ShowProfilePageView, index
+from .views import SignUp, updateuser, index
 
 urlpatterns = [
     path("signup/", SignUp.as_view(), name="signup"),
-    path('/<int:pk>/', ShowProfilePageView.as_view(), name='user'),
+    path('/<int:pk>/', updateuser, name='user'),
     path("", index, name='home'),
     path("home/<int:pk>/", index, name='home'),
     path("home/<str:tag>/", index, name='home'),

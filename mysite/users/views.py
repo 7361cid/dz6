@@ -1,11 +1,12 @@
 from django.views.generic.edit import CreateView
-from django.views.generic.detail import DetailView
+from django.views.generic import UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django import forms
 
 from .models import CustomUser
 from blog.models import Question, Answer
@@ -23,15 +24,31 @@ class SignUp(CreateView):
     success_url = reverse_lazy('login')
 
 
-class ShowProfilePageView(DetailView):
-    model = CustomUser
-    template_name = 'user_profile.html'
+class UserUpdateForm(forms.Form):
+    email = forms.EmailField(required=False)
+    profile_pic = forms.ImageField(required=False)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(ShowProfilePageView, self).get_context_data(*args, **kwargs)
-        page_user = get_object_or_404(CustomUser, id=self.kwargs['pk'])
-        context['page_user'] = page_user
-        return context
+    def form_valid(self, form):
+        print(f"LOG {form}")
+        form.save()
+
+
+def updateuser(request, pk):
+    # if form is submitted
+    page_user = get_object_or_404(CustomUser, id=pk)
+    if request.method == 'POST':
+        # will handle the request later
+        form = UserUpdateForm(request.POST)
+        print(f"LOG {form.data}")
+
+        if form.is_valid():
+            render(request, 'user_profile.html', {'form': form, 'page_user': page_user})
+    else:
+        # creating a new form
+        form = UserUpdateForm()
+
+    # returning form
+    return render(request, 'user_profile.html', {'form': form, 'page_user': page_user})
 
 
 def index(request, pk=1, tag=''):
@@ -46,7 +63,7 @@ def index(request, pk=1, tag=''):
                 questions = Question.objects.filter(Q(tag__tag__icontains=tag)).order_by('-rating', '-date')
             else:
                 questions = Question.objects.filter(Q(title__icontains=search) |
-                                                Q(content__icontains=search)).order_by('-rating', '-date')
+                                                    Q(content__icontains=search)).order_by('-rating', '-date')
         else:
             questions = Question.objects.all().order_by('-rating', '-date')
 

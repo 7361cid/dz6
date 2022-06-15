@@ -27,15 +27,17 @@
         <h1>Page {{ user.username }}</h1>
         <a href="{% url 'home' %}">Back</a>
     </div>
-    
-    <div class="card-body">
+
     {% if user.profile_pic %}
       <img src="{{ user.profile_pic.url }}" height=100 width=100><br><br>
     {% endif %}
-      {% if user.id == profile.user.id %}
-      форма редактирования
-      {% endif %}
+    {% if user.pk == page_user.pk %}
+        <form method="post">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <button type="submit">Log In</button>
+        </form>
+    {% endif %}
 
-    </div>
 
 {% endblock %}
