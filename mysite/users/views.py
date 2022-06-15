@@ -1,5 +1,4 @@
 from django.views.generic.edit import CreateView
-from django.views.generic import UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import get_object_or_404
@@ -24,30 +23,28 @@ class SignUp(CreateView):
     success_url = reverse_lazy('login')
 
 
-class UserUpdateForm(forms.Form):
-    email = forms.EmailField(required=False)
-    profile_pic = forms.ImageField(required=False)
-
-    def form_valid(self, form):
-        print(f"LOG {form}")
-        form.save()
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        exclude = ('username', 'password', 'first_name', 'is_superuser', 'date_joined', 'user_permissions',
+                   'last_name', 'is_staff', 'is_active', 'last_login', 'groups')
 
 
 def updateuser(request, pk):
-    # if form is submitted
     page_user = get_object_or_404(CustomUser, id=pk)
     if request.method == 'POST':
-        # will handle the request later
         form = UserUpdateForm(request.POST)
-        print(f"LOG {form.data}")
-
         if form.is_valid():
+            if form.data['email']:
+                page_user.email = form.cleaned_data['email']
+                page_user.save()
+            if form.data['profile_pic']:
+                page_user.profile_pic = form.cleaned_data['profile_pic']
+                page_user.save()
             render(request, 'user_profile.html', {'form': form, 'page_user': page_user})
     else:
-        # creating a new form
         form = UserUpdateForm()
 
-    # returning form
     return render(request, 'user_profile.html', {'form': form, 'page_user': page_user})
 
 
