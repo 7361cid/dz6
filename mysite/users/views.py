@@ -6,6 +6,9 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django import forms
+from django.middleware.csrf import get_token
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseRedirect
 
 from .models import CustomUser
 from blog.models import Question, Answer
@@ -19,8 +22,28 @@ class RegisterForm(UserCreationForm):
 
 class SignUp(CreateView):
     form_class = RegisterForm
-    template_name = 'registration\signup.html'
+    template_name = 'registration\\signup.html'
     success_url = reverse_lazy('login')
+
+
+def login_user(request):
+    logout(request)
+    username = password = ''
+    csrf_token = get_token(request)
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/')
+    return render(None, 'registration\\login.html', {'csrf_token': csrf_token})
+
+
+def logout_user(request):
+    logout(request)
+    return HttpResponseRedirect('/')
 
 
 class UserUpdateForm(forms.ModelForm):
