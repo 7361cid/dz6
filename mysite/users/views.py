@@ -44,25 +44,29 @@ def updateuser(request, pk):
             render(request, 'user_profile.html', {'form': form, 'page_user': page_user})
     else:
         form = UserUpdateForm()
+    questions_trends = Question.objects.order_by('-rating', '-date')[:20]
+    return render(request, 'user_profile.html', {'form': form, 'page_user': page_user,
+                                                 'questions_trends': questions_trends})
 
-    return render(request, 'user_profile.html', {'form': form, 'page_user': page_user})
 
-
-def index(request, pk=1, tag=''):
+def index(request, pk=1, tag='', sort=1):
     search = request.GET.get('q')
+    if sort == 1:
+        order_by = "-date"
+    else:
+        order_by = "-rating"
     if tag:
-        print(f"LOG {tag}")
-        questions = Question.objects.filter(Q(tag__tag__icontains=tag)).order_by('-rating', '-date')
+        questions = Question.objects.filter(Q(tag__tag__icontains=tag)).order_by(order_by)
     else:
         if search:
             if search.startswith("tag:"):
                 tag = search.split('tag:')[-1]
-                questions = Question.objects.filter(Q(tag__tag__icontains=tag)).order_by('-rating', '-date')
+                questions = Question.objects.filter(Q(tag__tag__icontains=tag)).order_by(order_by)
             else:
                 questions = Question.objects.filter(Q(title__icontains=search) |
-                                                    Q(content__icontains=search)).order_by('-rating', '-date')
+                                                    Q(content__icontains=search)).order_by(order_by)
         else:
-            questions = Question.objects.all().order_by('-rating', '-date')
+            questions = Question.objects.all().order_by(order_by)
 
     paginator = Paginator(questions, 20)  # Show 20 contacts per page.
     questions_trends = Question.objects.order_by('-rating', '-date')[:20]

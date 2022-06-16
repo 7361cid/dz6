@@ -6,5 +6,6 @@ urlpatterns = [
     path('/<int:pk>/', updateuser, name='user'),
     path("", index, name='home'),
     path("home/<int:pk>/", index, name='home'),
+    path("home/<int:sort>/", index, name='home'),
     path("home/<str:tag>/", index, name='home'),
 ]

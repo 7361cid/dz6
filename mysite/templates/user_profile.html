@@ -38,6 +38,35 @@
               <button type="submit">Log In</button>
         </form>
     {% endif %}
+    {% for q in  questions_trends  %}
+    <tr>
+        <td class="table_question_data">
+            <div class="invisible">для растяжения блока</div>
+        </td>
+        <td class="table_question_data">
+            <div class="invisible">для растяжения блока</div>
+        </td>
+    </tr>
+  {% endfor %}
+{% endblock %}
 
-
+{% block sidebar %}
+{% if request.user.is_authenticated %}
+    <p><button onclick="window.location.href = '{% url 'question_new' %}';">Ask!</button></p>
+{% else %}
+    <p><button onclick="window.location.href = '{% url 'login' %}';">Ask!</button></p>
+{% endif %}
+<h1> Trending </h1>
+<table class="table_questions">
+  {% for q in  questions_trends  %}
+    <tr>
+        <td class="table_question_data">
+            <p><button onclick="window.location.href = '{% url 'question' pk=q.id %}';">{{ q.rating }}</button></p>
+        </td>
+        <td class="table_question_data">
+            <p>{{ q.title }}</p>
+        </td>
+    </tr>
+  {% endfor %}
+</table>
 {% endblock %}

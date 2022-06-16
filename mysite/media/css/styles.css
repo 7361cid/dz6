@@ -16,12 +16,19 @@ input[type="text"] {
 	vertical-align: top;
 }
 button {
-	color: #fff;
-	background-color: #29c5e6;
-	border: none;
-	height: 32px;
-	font-family: 'Oswald', sans-serif;
+	  appearance: none;
+      border: 0;
+      border-radius: 5px;
+      background: #4676D7;
+      color: #fff;
+      padding: 8px 16px;
+      font-size: 16px;
 }
+
+.separator {
+    font: 30px Tahoma, sans-serif;
+}
+
 p {
 	margin: 20px 0;
 }
@@ -68,6 +75,11 @@ input[name="tag"] {
 
 .table_column {
    width: 30vh;
+   float: center;
+}
+
+.table_separator {
+   width: 10px;
    float: center;
 }
 

@@ -2,11 +2,32 @@
 
 {% block title %}Login{% endblock %}
 
-{% block content %}
+{% block content_center %}
 <h2>Log In</h2>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Log In</button>
 </form>
+{% endblock %}
+
+{% block sidebar %}
+{% if request.user.is_authenticated %}
+    <p><button onclick="window.location.href = '{% url 'question_new' %}';">Ask!</button></p>
+{% else %}
+    <p><button onclick="window.location.href = '{% url 'login' %}';">Ask!</button></p>
+{% endif %}
+<h1> Trending </h1>
+<table class="table_questions">
+  {% for q in  questions_trends  %}
+    <tr>
+        <td class="table_question_data">
+            <p><button onclick="window.location.href = '{% url 'question' pk=q.id %}';">{{ q.rating }}</button></p>
+        </td>
+        <td class="table_question_data">
+            <p>{{ q.title }}</p>
+        </td>
+    </tr>
+  {% endfor %}
+</table>
 {% endblock %}
