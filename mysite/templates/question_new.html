@@ -21,6 +21,7 @@
 {% endblock %}
 
 {% block content_center %}
+    <h1> Ask a question </h1>
     <form action="" method="post"> {% csrf_token %}
     {{ form.as_p }}
         <input type="submit" value="Сохранить">

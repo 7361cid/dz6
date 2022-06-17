@@ -25,6 +25,11 @@ class SignUp(CreateView):
     template_name = 'registration\\signup.html'
     success_url = reverse_lazy('login')
 
+    def get_context_data(self, **kwargs):
+        ctx = super(SignUp, self).get_context_data(**kwargs)
+        ctx['questions_trends'] = Question.objects.order_by('-rating', '-date')[:20]
+        return ctx
+
 
 def login_user(request):
     logout(request)

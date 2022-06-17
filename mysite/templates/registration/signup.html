@@ -1,9 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Регистрация</title>
-</head>
+{% extends 'base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<table>
+        <tr>
+            <td class="table_column">
+                <a id="logo" href="/"><img src="/media/images/logo.png" alt="Whitesquare logo"></a>
+            </td>
+            <td class="table_column">
+                <form name="search" action="/" method="get">
+                    <div class="search">
+                      <input type="search" placeholder="Search" name="q">
+                      <input class="search_button"  type="submit" value="GO">
+                    </div>
+                </form>
+            </td>
+            <td class="table_column">
+                {% if user.is_authenticated %}
+                  <div class="login"><a href="{% url 'logout' %}">Log Out </a>  <a href="{% url 'user' pk=user.pk %}">Your page </a></div>
+                {% else %}
+                  <div class="login"><a href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign up</button></div>
+                {% endif %}
+            </td>
+        </tr>
+</table>
+{% endblock %}
+
+{% block content_center %}
 <body>
     <form action="" method="post"> {% csrf_token %}
     {{ form.as_p }}
@@ -11,3 +35,40 @@
     </form>
 </body>
 </html>
+
+ <table>
+    {% for q in  questions_trends  %}
+    <tr>
+        <td class="table_question_data">
+            <div class="invisible">для растяжения блока</div>
+        </td>
+    </tr>
+        <tr> <td class="table_question_data">
+            <div class="invisible">для растяжения блока</div>
+        </td>
+    </tr>
+  {% endfor %}
+  </table>
+
+{% endblock %}
+
+{% block sidebar %}
+{% if request.user.is_authenticated %}
+    <p><button onclick="window.location.href = '{% url 'question_new' %}';">Ask!</button></p>
+{% else %}
+    <p><button onclick="window.location.href = '{% url 'login' %}';">Ask!</button></p>
+{% endif %}
+<h1> Trending </h1>
+<table class="table_questions">
+  {% for q in  questions_trends  %}
+    <tr>
+        <td class="table_question_data">
+            <p><button onclick="window.location.href = '{% url 'question' pk=q.id %}';">{{ q.rating }}</button></p>
+        </td>
+        <td class="table_question_data">
+            <p>{{ q.title }}</p>
+        </td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -8,11 +8,6 @@ from django.contrib.auth.decorators import login_required
 from .models import Question, Tag, Answer, Vote
 
 
-class QuestionListView(ListView):
-    model = Question
-    template_name = 'question_list.html'
-
-
 class AskForm(forms.ModelForm):
     content = forms.CharField(max_length=10000)
 
@@ -125,14 +120,14 @@ class QuestionForm(forms.ModelForm):
 class VoteForm(forms.ModelForm):
     class Meta:
         model = Vote
-        fields = ['vote']  # ['vote', 'question']
+        fields = ['vote']
         widgets = {'vote': forms.HiddenInput()}
 
 
 class QuestionCreateView(LoginRequiredMixin, CreateView):
     form_class = QuestionForm
     template_name = 'question_new.html'
-    success_url = '/blog/question_list/'
+    success_url = '/'
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)

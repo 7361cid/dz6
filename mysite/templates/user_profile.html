@@ -20,36 +20,6 @@
 </table>
 {% endblock %}
 
-
-{% block content_center %}
-
-    <div class="header-bar">
-        <h1>Page {{ user.username }}</h1>
-        <a href="{% url 'home' %}">Back</a>
-    </div>
-
-    {% if user.profile_pic %}
-      <img src="{{ user.profile_pic.url }}" height=100 width=100><br><br>
-    {% endif %}
-    {% if user.pk == page_user.pk %}
-        <form method="post">
-              {% csrf_token %}
-              {{ form.as_p }}
-              <button type="submit">Log In</button>
-        </form>
-    {% endif %}
-    {% for q in  questions_trends  %}
-    <tr>
-        <td class="table_question_data">
-            <div class="invisible">для растяжения блока</div>
-        </td>
-        <td class="table_question_data">
-            <div class="invisible">для растяжения блока</div>
-        </td>
-    </tr>
-  {% endfor %}
-{% endblock %}
-
 {% block sidebar %}
 {% if request.user.is_authenticated %}
     <p><button onclick="window.location.href = '{% url 'question_new' %}';">Ask!</button></p>
@@ -70,3 +40,35 @@
   {% endfor %}
 </table>
 {% endblock %}
+
+{% block content_center %}
+
+    <div class="header-bar">
+        <h1>Page {{ user.username }}</h1>
+        <a href="{% url 'home' %}">Back</a>
+    </div>
+
+    {% if user.profile_pic %}
+      <img src="{{ user.profile_pic.url }}" height=100 width=100><br><br>
+    {% endif %}
+    {% if user.pk == page_user.pk %}
+        <form method="post">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <button type="submit">Log In</button>
+        </form>
+    {% endif %}
+    <table>
+        {% for q in  questions_trends  %}
+            <tr>
+                <td class="table_question_data">
+                    <div class="invisible">для растяжения блока</div>
+                </td>
+                <td class="table_question_data">
+                    <div class="invisible">для растяжения блока</div>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+
