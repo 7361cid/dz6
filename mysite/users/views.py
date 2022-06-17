@@ -28,7 +28,6 @@ class SignUp(CreateView):
 
 def login_user(request):
     logout(request)
-    username = password = ''
     csrf_token = get_token(request)
     if request.POST:
         username = request.POST['username']
@@ -38,7 +37,9 @@ def login_user(request):
             if user.is_active:
                 login(request, user)
                 return HttpResponseRedirect('/')
-    return render(None, 'registration\\login.html', {'csrf_token': csrf_token})
+    questions_trends = Question.objects.order_by('-rating', '-date')[:20]
+    return render(None, 'registration\\login.html', {'csrf_token': csrf_token,
+                                                     'questions_trends': questions_trends})
 
 
 def logout_user(request):

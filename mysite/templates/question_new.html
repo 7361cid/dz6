@@ -26,16 +26,20 @@
         <input type="submit" value="Сохранить">
     </form>
 
+    <table>
     {% for q in  questions_trends  %}
     <tr>
         <td class="table_question_data">
             <div class="invisible">для растяжения блока</div>
         </td>
-        <td class="table_question_data">
+    </tr>
+        <tr> <td class="table_question_data">
             <div class="invisible">для растяжения блока</div>
         </td>
     </tr>
   {% endfor %}
+  </table>
+
 {% endblock %}
 
 
