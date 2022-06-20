@@ -71,14 +71,13 @@
         <table>
             <tr>
                 <td>
-                    <form action="vote_for_answer/" method="post">
+                    <form action="vote_for_answer/{{ answer.pk }}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="vote" value="{{ True }}"/>
                         <button class="button" type="submit" > + </button>
                     </form>
                     <p>{{ answer.rating }}</p>
-                    <p>PK {{ answer.pk }}</p>
-                    <form action="vote_for_answer/" method="post">
+                    <form action="vote_for_answer/{{ answer.pk }}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="vote" value="{{ False }}" />
                         <button class="button" type="submit" > - </button>

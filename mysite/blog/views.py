@@ -54,21 +54,21 @@ def vote_for_question(request, pk):
 
 
 @login_required
-def vote_for_answer(request, pk):
+def vote_for_answer(request, pk, pk2):
     if request.method == 'POST':
         form = VoteAnswerForm(request.POST)
         if form.is_valid():
             vote = form.save(commit=False)
             vote.user = request.user
             # If changing vote or voting virst time
-            current_vote = VoteAnswer.objects.filter(answer_pk=pk, user=vote.user)
+            current_vote = VoteAnswer.objects.filter(answer_pk=pk2, user=vote.user)
 
             if not current_vote.exists():
-                vote.set_vote(answer_pk=pk)
+                vote.set_vote(answer_pk=pk2)
 
             elif current_vote[0].vote != vote.vote:
-                updating_vote = VoteAnswer.objects.get(answer_pk=pk, user=vote.user)
-                updating_vote.set_vote(answer_pk=pk, vote=vote.vote)
+                updating_vote = VoteAnswer.objects.get(answer_pk=pk2, user=vote.user)
+                updating_vote.set_vote(answer_pk=pk2, vote=vote.vote)
 
     return redirect(f'/blog/question_list/{pk}')
 
