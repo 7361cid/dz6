@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from .models import Question, Tag, Answer, Vote
+from .models import Question, Tag, Answer, Vote, VoteAnswer
 
 
 class AskForm(forms.ModelForm):
@@ -49,6 +49,26 @@ def vote_for_question(request, pk):
             elif current_vote[0].vote != vote.vote:
                 updating_vote = Vote.objects.get(question_pk=pk, user=vote.user)
                 updating_vote.set_vote(question_pk=pk, vote=vote.vote)
+
+    return redirect(f'/blog/question_list/{pk}')
+
+
+@login_required
+def vote_for_answer(request, pk):
+    if request.method == 'POST':
+        form = VoteAnswerForm(request.POST)
+        if form.is_valid():
+            vote = form.save(commit=False)
+            vote.user = request.user
+            # If changing vote or voting virst time
+            current_vote = VoteAnswer.objects.filter(answer_pk=pk, user=vote.user)
+
+            if not current_vote.exists():
+                vote.set_vote(answer_pk=pk)
+
+            elif current_vote[0].vote != vote.vote:
+                updating_vote = VoteAnswer.objects.get(answer_pk=pk, user=vote.user)
+                updating_vote.set_vote(answer_pk=pk, vote=vote.vote)
 
     return redirect(f'/blog/question_list/{pk}')
 
@@ -121,6 +141,12 @@ class VoteForm(forms.ModelForm):
         fields = ['vote']
         widgets = {'vote': forms.HiddenInput()}
 
+
+class VoteAnswerForm(forms.ModelForm):
+    class Meta:
+        model = VoteAnswer
+        fields = ['vote']
+        widgets = {'vote': forms.HiddenInput()}
 
 class QuestionCreateView(LoginRequiredMixin, CreateView):
     form_class = QuestionForm

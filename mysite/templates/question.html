@@ -71,10 +71,21 @@
         <table>
             <tr>
                 <td>
-                    <p>{{ answer.content }}</p>
+                    <form action="vote_for_answer/" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="vote" value="{{ True }}"/>
+                        <button class="button" type="submit" > + </button>
+                    </form>
+                    <p>{{ answer.rating }}</p>
+                    <p>PK {{ answer.pk }}</p>
+                    <form action="vote_for_answer/" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="vote" value="{{ False }}" />
+                        <button class="button" type="submit" > - </button>
+                    </form>
                 </td>
                 <td>
-                    <p>{{ answer.rating }}</p>
+                    <p>{{ answer.content }}</p>
                 </td>
             </tr>
             <tr>
@@ -96,6 +107,7 @@
             </a>
             {% endif %}
         </table>
+        <hr>
     {% empty %}
     <p>Нет ответов</p>
 

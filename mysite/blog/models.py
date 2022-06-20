@@ -37,6 +37,7 @@ class Answer(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     right = models.BooleanField(default=0)
     question_pk = models.IntegerField()
+    rating = models.IntegerField(default=0)
 
 
 def change_rating(question_pk, vote):
@@ -45,8 +46,17 @@ def change_rating(question_pk, vote):
         question.rating += 1
     elif vote is False:
         question.rating -= 1
-
     question.save()
+
+
+def change_rating_answer(answer_pk, vote):
+    print(f"LOG answer_pk {answer_pk}")
+    answer = Answer.objects.get(pk=answer_pk)
+    if vote:
+        answer.rating += 1
+    elif vote is False:
+        answer.rating -= 1
+    answer.save()
 
 
 class Vote(models.Model):
@@ -68,3 +78,24 @@ class Vote(models.Model):
         self.save(question_pk)
 
         change_rating(question_pk=question_pk, vote=self.vote)
+
+
+class VoteAnswer(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    answer_pk = models.IntegerField()
+    vote = models.BooleanField(null=True)
+
+    class Meta:
+        unique_together = ['user', 'answer_pk']
+
+    def save(self, answer_pk, *args, **kwargs):
+        self.answer_pk = answer_pk
+        super(VoteAnswer, self).save(*args, **kwargs)
+
+    def set_vote(self, answer_pk, vote=None):
+        if vote is not None:
+            self.vote = vote
+
+        self.save(answer_pk)
+
+        change_rating_answer(answer_pk=answer_pk, vote=self.vote)
