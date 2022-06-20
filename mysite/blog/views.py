@@ -4,6 +4,7 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 from .models import Question, Tag, Answer, Vote, VoteAnswer
 
@@ -18,8 +19,9 @@ class AskForm(forms.ModelForm):
 
 def question_with_answers_view(request, pk):
     question = Question.objects.get(pk=pk)
-    answers = Answer.objects.filter(question_pk=pk)
-    context = {'question': question, 'answers': answers}
+    answers = Answer.objects.filter(question_pk=pk).order_by('-rating', '-date')
+    paginator = Paginator(answers, 30)
+    context = {'question': question, 'answers': answers, 'paginator': paginator.page(1)}
     if request.method == 'POST':
         form = AskForm(request.POST)
         if form.is_valid():
@@ -147,6 +149,7 @@ class VoteAnswerForm(forms.ModelForm):
         model = VoteAnswer
         fields = ['vote']
         widgets = {'vote': forms.HiddenInput()}
+
 
 class QuestionCreateView(LoginRequiredMixin, CreateView):
     form_class = QuestionForm

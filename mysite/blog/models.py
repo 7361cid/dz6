@@ -50,7 +50,6 @@ def change_rating(question_pk, vote):
 
 
 def change_rating_answer(answer_pk, vote):
-    print(f"LOG answer_pk {answer_pk}")
     answer = Answer.objects.get(pk=answer_pk)
     if vote:
         answer.rating += 1

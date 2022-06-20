@@ -145,3 +145,7 @@ li{list-style-position:inside;}
 .td_content_center {
    width: 80%;
 }
+
+.right_answer {
+ font-size: 25px;
+}

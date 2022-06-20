@@ -65,11 +65,15 @@
             </td>
         </tr>
     </table>
-
-
+    <hr>
     {% for answer in answers %}
         <table>
             <tr>
+                {% if answer.right %}
+                    <td>
+                        <p class="right_answer">👑</p>
+                    </td>
+                {% endif %}
                 <td>
                     <form action="vote_for_answer/{{ answer.pk }}" method="post">
                         {% csrf_token %}
@@ -88,11 +92,6 @@
                 </td>
             </tr>
             <tr>
-                {% if answer.right %}
-                    <td>
-                        <p>Rigth answer</p>
-                    </td>
-                {% endif %}
                 <td>
                     <p><a href="{% url 'user' pk=answer.author.pk %}">{{ answer.author }}</a></p>
                 </td>
@@ -102,15 +101,40 @@
             </tr>
             {% if user == question.author %}
             <a href="make_answer_right/{{ answer.id }}">
-            <button> This question Right? </button>
+            <button> This answer is right? </button>
             </a>
             {% endif %}
         </table>
         <hr>
     {% empty %}
     <p>Нет ответов</p>
-
     {% endfor %}
+
+    <table>
+    {% for q in paginator.object_list %}
+            <tr>
+                <td class="table_question_data">
+                    <p>{{ q.rating }}</p>
+                    <p>Votes</p>
+                </td>
+    {% endfor %}
+    </table>
+    <ul class="pagination">
+                    {% if paginator.has_previous %}
+                        <li>
+                            <span><a href="/home/{{ paginator.previous_page_number }}">Previous</a></span>
+                        </li>
+                    {% endif %}
+                        <li class="pagination">
+                            <span>Page {{ paginator.number }} of {{ paginator.paginator.num_pages }}.</span>
+                        </li>
+                    {% if paginator.has_next %}
+                        <li class="pagination">
+                            <span><a href="/home/{{ paginator.next_page_number }}">Next</a></span>
+                        </li>
+                    {% endif %}
+    </ul>
+
     {% if request.user.is_authenticated %}
         <p> Ваш ответ </p>
         <form action="" method="post"> {% csrf_token %}

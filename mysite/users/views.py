@@ -104,7 +104,7 @@ def index(request, pk=1, tag='', sort=1):
         else:
             questions = Question.objects.all().order_by(order_by)
 
-    paginator = Paginator(questions, 20)  # Show 20 contacts per page.
+    paginator = Paginator(questions, 20)
     questions_trends = Question.objects.order_by('-rating', '-date')[:20]
     answers = {}
     for q in questions:
