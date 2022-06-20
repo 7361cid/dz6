@@ -33,7 +33,8 @@ def signup(request):
             return HttpResponseRedirect('/')
     else:
         form = RegisterForm()
-    return render(request, 'registration\\signup.html', {'form': form})
+    questions_trends = Question.objects.order_by('-rating', '-date')[:20]
+    return render(request, 'registration\\signup.html', {'form': form, 'questions_trends': questions_trends})
 
 
 def login_user(request):

@@ -21,35 +21,81 @@
 {% endblock %}
 
 {% block content_center %}
-    <h2>{{ question.title }}</h2>
-    <p>{{ question.content }}</p>
-    <p>{{ question.rating }}</p>
-    {% if user.is_authenticated %}
-        <form action="vote_for_question/" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="vote" value="{{ True }}" />
-            <input type="hidden" name="image" value="{{ post.id }}" />
-            <button class="button" type="submit" > + </button>
-        </form>
-        <form action="vote_for_question/" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="vote" value="{{ False }}" />
-            <input type="hidden" name="image" value="{{ post.id }}" />
-            <button class="button" type="submit" > - </button>
-        </form>
-    {% endif %}
-    <p>{{ question.author }} <img src="{{ question.author.profile_pic.url }}" height=100 width=100><br></p>
-    <p><a href="{% url 'home' tag=question.tag %}">{{ question.tag }}</a></p>
+    <table>
+        <tr>
+            <td>
+                <h2 class="question">{{ question.title }}</h2>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {% if user.is_authenticated %}
+                    <form action="vote_for_question/" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="vote" value="{{ True }}"/>
+                        <button class="button" type="submit" > + </button>
+                    </form>
+                    <h2 class="question">{{ question.rating }}</h2>
+                    <form action="vote_for_question/" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="vote" value="{{ False }}" />
+                        <button class="button" type="submit" > - </button>
+                    </form>
+                {% endif %}
+            </td>
+            <td>
+                <div>{{ question.content }}</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><a href="{% url 'home' tag=question.tag %}">{{ question.tag }}</a></p>
+            </td>
+            {% if q.tag2 %}
+                <p><button onclick="window.location.href = '{% url 'home' tag=q.tag2 %}';">{{ question.tag2 }}</button></p>
+            {% endif %}
+            {% if q.tag3 %}
+                <p><button onclick="window.location.href = '{% url 'home' tag=q.tag3 %}';">{{ question.tag3 }}</button></p>
+            {% endif %}
+            <td>
+                <p><a href="{% url 'user' pk=question.author.pk %}">{{ question.author }}</a></p>
+            </td>
+            <td>
+                <img src="{{ question.author.profile_pic.url }}" height=40 width=40>
+            </td>
+        </tr>
+    </table>
+
+
     {% for answer in answers %}
-        <p>{{ answer.content }}</p>
-        <p>{{ answer.date }}</p>
-        <p>{{ answer.author }}</p>
-        {% if user == question.author %}
-        <a href="make_answer_right/{{ answer.id }}">
-        <button> This question Right? </button>
-        </a>
-        {% endif %}
-        <p>{{ answer.right }}</p>
+        <table>
+            <tr>
+                <td>
+                    <p>{{ answer.content }}</p>
+                </td>
+                <td>
+                    <p>{{ answer.rating }}</p>
+                </td>
+            </tr>
+            <tr>
+                {% if answer.right %}
+                    <td>
+                        <p>Rigth answer</p>
+                    </td>
+                {% endif %}
+                <td>
+                    <p><a href="{% url 'user' pk=answer.author.pk %}">{{ answer.author }}</a></p>
+                </td>
+                <td>
+                    <img src="{{ answer.author.profile_pic.url }}" height=40 width=40>
+                </td>
+            </tr>
+            {% if user == question.author %}
+            <a href="make_answer_right/{{ answer.id }}">
+            <button> This question Right? </button>
+            </a>
+            {% endif %}
+        </table>
     {% empty %}
     <p>Нет ответов</p>
 

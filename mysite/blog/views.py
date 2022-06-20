@@ -42,7 +42,6 @@ def vote_for_question(request, pk):
             vote.user = request.user
             # If changing vote or voting virst time
             current_vote = Vote.objects.filter(question_pk=pk, user=vote.user)
-            print(f"LOG {current_vote} ")
 
             if not current_vote.exists():
                 vote.set_vote(question_pk=pk)
@@ -71,7 +70,6 @@ class TagField(forms.Field):
         return Tag.objects.create(tag=value)
 
     def validate(self, value):
-        print("LOG validate")
         tags_list = str(value).split(',')
         if len(tags_list) > 3:
             raise forms.ValidationError("You can't use more than 3 tags")

@@ -46,21 +46,21 @@ p {
 
 
 .search {
-    width: 300px; /* Ширина поля с кнопкой */
-    min-height: 20px; /* Минимальная высота */
+    width: 300px;
+    min-height: 20px;
    }
 input[type="search"] {
-    border: none; /* Убираем рамку */
-    outline: none; /* Убираем свечение в Chrome и Safari */
-    -webkit-appearance: none; /* Убираем рамку в Chrome и Safari */
-    width: 200px; /* Ширина поля */
+    border: none;
+    outline: none;
+    -webkit-appearance: none;
+    width: 200px;
     height: 20px;
-    vertical-align: middle; /* Выравнивание по середине */
+    vertical-align: middle;
    }
 .search_button {
-    width: 30px; /* Ширина кнопки */
-    height: 20px; /* Высота кнопки */
-    border: none; /* Убираем рамку */
+    width: 30px;
+    height: 20px;
+    border: none;
    }
 
 input[name="tag"] {
@@ -96,6 +96,10 @@ input[name="tag"] {
     text-align: center;
 }
 
+.question {
+   text-align: center;
+}
+
 .login {
     float: right;
 }
@@ -103,18 +107,17 @@ li{list-style-position:inside;}
 
 
 .container {
-    width: 100vh; /* Ширина слоя */
-   /* height: 90vh; */
-    margin: 0 auto; /* Выравнивнить весь блок по центру */
-    background: #f0f0f0; /* Цвет фона левой колонки */
+    width: 100vh;
+    margin: 0 auto;
+    background: #f0f0f0;
    }
 
 .header {
-    font-size: 20px; /* Размер текста в шапке */
-    text-align: center; /* Выравнивание текст шапки по центру */
-    padding: 5px; /* Отступы внутри блока шапки */
-    background: #8fa09b; /* Цвет фона шапки */
-    color: #fff; /* Цвет текста */
+    font-size: 20px;
+    text-align: center;
+    padding: 5px;
+    background: #8fa09b;
+    color: #fff;
     height: 10vh;
     width: 100%;
 
