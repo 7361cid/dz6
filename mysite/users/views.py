@@ -1,5 +1,3 @@
-from django.views.generic.edit import CreateView
-from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
@@ -20,15 +18,22 @@ class RegisterForm(UserCreationForm):
         fields = ("username", "email", "profile_pic")
 
 
-class SignUp(CreateView):
-    form_class = RegisterForm
-    template_name = 'registration\\signup.html'
-    success_url = reverse_lazy('login')
-
-    def get_context_data(self, **kwargs):
-        ctx = super(SignUp, self).get_context_data(**kwargs)
-        ctx['questions_trends'] = Question.objects.order_by('-rating', '-date')[:20]
-        return ctx
+def signup(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            user = CustomUser.objects.get(username=username)
+            user.profile_pic = request.FILES['profile_pic']
+            user.save()
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return HttpResponseRedirect('/')
+    else:
+        form = RegisterForm()
+    return render(request, 'registration\\signup.html', {'form': form})
 
 
 def login_user(request):
@@ -67,9 +72,10 @@ def updateuser(request, pk):
             if form.data['email']:
                 page_user.email = form.cleaned_data['email']
                 page_user.save()
-            if form.data['profile_pic']:
-                page_user.profile_pic = form.cleaned_data['profile_pic']
+            if "profile_pic" in request.FILES.keys():
+                page_user.profile_pic = request.FILES['profile_pic']
                 page_user.save()
+
             render(request, 'user_profile.html', {'form': form, 'page_user': page_user})
     else:
         form = UserUpdateForm()

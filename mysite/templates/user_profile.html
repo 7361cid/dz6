@@ -52,10 +52,10 @@
       <img src="{{ user.profile_pic.url }}" height=100 width=100><br><br>
     {% endif %}
     {% if user.pk == page_user.pk %}
-        <form method="post">
+        <form method="post" enctype='multipart/form-data'>
               {% csrf_token %}
               {{ form.as_p }}
-              <button type="submit">Log In</button>
+              <button type="submit">Change</button>
         </form>
     {% endif %}
     <table>
