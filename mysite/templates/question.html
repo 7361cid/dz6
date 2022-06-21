@@ -65,38 +65,38 @@
             </td>
         </tr>
     </table>
-    <hr>
-    {% for answer in answers %}
-        <table>
+
+    {% for a in paginator.object_list %}
+    <table>
             <tr>
-                {% if answer.right %}
+                {% if a.right %}
                     <td>
                         <p class="right_answer">👑</p>
                     </td>
                 {% endif %}
                 <td>
-                    <form action="vote_for_answer/{{ answer.pk }}" method="post">
+                    <form action="vote_for_answer/{{ a.pk }}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="vote" value="{{ True }}"/>
                         <button class="button" type="submit" > + </button>
                     </form>
-                    <p>{{ answer.rating }}</p>
-                    <form action="vote_for_answer/{{ answer.pk }}" method="post">
+                    <p>{{ a.rating }}</p>
+                    <form action="vote_for_answer/{{ a.pk }}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="vote" value="{{ False }}" />
                         <button class="button" type="submit" > - </button>
                     </form>
                 </td>
                 <td>
-                    <p>{{ answer.content }}</p>
+                    <p>{{ a.content }}</p>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <p><a href="{% url 'user' pk=answer.author.pk %}">{{ answer.author }}</a></p>
+                    <p><a href="{% url 'user' pk=a.author.pk %}">{{ a.author }}</a></p>
                 </td>
                 <td>
-                    <img src="{{ answer.author.profile_pic.url }}" height=40 width=40>
+                    <img src="{{ a.author.profile_pic.url }}" height=40 width=40>
                 </td>
             </tr>
             {% if user == question.author %}
@@ -104,25 +104,14 @@
             <button> This answer is right? </button>
             </a>
             {% endif %}
-        </table>
         <hr>
-    {% empty %}
-    <p>Нет ответов</p>
+    </table>
     {% endfor %}
 
-    <table>
-    {% for q in paginator.object_list %}
-            <tr>
-                <td class="table_question_data">
-                    <p>{{ q.rating }}</p>
-                    <p>Votes</p>
-                </td>
-    {% endfor %}
-    </table>
     <ul class="pagination">
                     {% if paginator.has_previous %}
                         <li>
-                            <span><a href="/home/{{ paginator.previous_page_number }}">Previous</a></span>
+                            <span><a href="/blog/question_list/{{ question.pk }}/{{ paginator.previous_page_number }}">Previous</a></span>
                         </li>
                     {% endif %}
                         <li class="pagination">
@@ -130,7 +119,7 @@
                         </li>
                     {% if paginator.has_next %}
                         <li class="pagination">
-                            <span><a href="/home/{{ paginator.next_page_number }}">Next</a></span>
+                            <span><a href="/blog/question_list/{{ question.pk }}/{{ paginator.next_page_number }}">Next</a></span>
                         </li>
                     {% endif %}
     </ul>

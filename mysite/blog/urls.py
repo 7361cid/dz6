@@ -6,6 +6,7 @@ from .views import question_with_answers_view, QuestionCreateView, vote_for_ques
 
 urlpatterns = [
     path(r'question_list/<int:pk>/', question_with_answers_view, name='question'),
+    path(r'question_list/<int:pk>/<int:page>', question_with_answers_view, name='question'),
     path('question_list/add/', QuestionCreateView.as_view(), name='question_new'),
     path('question_list/<int:pk>/vote_for_question/', vote_for_question, name='vote_for_question'),
     path('question_list/<int:pk>/vote_for_answer/<int:pk2>', vote_for_answer, name='vote_for_answer'),
