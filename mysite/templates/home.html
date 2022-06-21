@@ -16,16 +16,27 @@
                     </div>
                 </form>
             </td>
-            <td class="table_column">
-                {% if user.is_authenticated %}
-                  <div class="login"><a href="{% url 'logout' %}">Log Out </a>  <a href="{% url 'user' pk=user.pk %}">Your page </a></div>
-                {% else %}
-                  <div class="login"><a href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign up</button></div>
-                {% endif %}
-            </td>
         </tr>
 </table>
 {% endblock %}
+
+{% block user %}
+<table>
+    <tr>
+        <td class="table_column">
+                {% if user.is_authenticated %}
+                    {% if user.profile_pic %}
+                        <img src="{{ user.profile_pic.url }}" height=35 width=35>
+                    {% endif %}
+                  <div class="login"><a href="{% url 'logout' %}"><img src="/media/images/logout.png" alt="Whitesquare logo"></a>  <a href="{% url 'user' pk=user.pk %}">Your page </a></div>
+                {% else %}
+                  <div class="login"><a id="logout" href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign up</button></div>
+                {% endif %}
+        </td>
+    </tr>
+</table>
+{% endblock %}
+
 {% block content_center %}
     <table class="table_questions">
          <tr>

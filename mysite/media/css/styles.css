@@ -43,6 +43,10 @@ p {
     height: auto;
 }
 
+#logout {
+    width: 30px;
+    height: auto;
+}
 
 
 .search {
@@ -70,6 +74,10 @@ input[name="tag"] {
 .invisible {
     visibility: hidden;
      height: 36px;
+}
+
+table {
+    border-collapse: collapse;
 }
 
 .table_column {
