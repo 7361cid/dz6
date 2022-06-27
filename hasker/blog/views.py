@@ -20,7 +20,7 @@ class AskForm(forms.ModelForm):
 def question_with_answers_view(request, pk, page=1):
     question = Question.objects.get(pk=pk)
     answers = Answer.objects.filter(question_pk=pk).order_by('-rating', '-date')
-    paginator = Paginator(answers, 10)
+    paginator = Paginator(answers, 30)
     context = {'question': question, 'answers': answers, 'paginator': paginator.page(page)}
     if request.method == 'POST':
         form = AskForm(request.POST)
