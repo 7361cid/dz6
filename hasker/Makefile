@@ -7,5 +7,5 @@ prod:
 	pip3 install -r requirements.txt
 	python3 manage.py makemigrations
 	python3 manage.py migrate
-	python3 -Xutf8 manage.py loaddata fixtures/dump.json
+	python3 -Xutf8 manage.py loaddata fixtures/dump.xml
 	python3 manage.py runserver
