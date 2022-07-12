@@ -15,7 +15,7 @@ from blog.models import Question, Answer
 class RegisterForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ("username", "email", "profile_pic")
+        fields = ("username", "email", "profile_avatar")
 
 
 def signup(request):
@@ -25,7 +25,7 @@ def signup(request):
             form.save()
             username = form.cleaned_data.get('username')
             user = CustomUser.objects.get(username=username)
-            user.profile_pic = request.FILES['profile_pic']
+            user.profile_avatar = request.FILES['profile_avatar']
             user.save()
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
@@ -73,8 +73,8 @@ def updateuser(request, pk):
             if form.data['email']:
                 page_user.email = form.cleaned_data['email']
                 page_user.save()
-            if "profile_pic" in request.FILES.keys():
-                page_user.profile_pic = request.FILES['profile_pic']
+            if "profile_avatar" in request.FILES.keys():
+                page_user.profile_avatar = request.FILES['profile_avatar']
                 page_user.save()
 
             render(request, 'user_profile.html', {'form': form, 'page_user': page_user})
