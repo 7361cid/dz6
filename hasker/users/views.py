@@ -1,23 +1,38 @@
-from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django import forms
 from django.middleware.csrf import get_token
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
+from django.views.generic.base import View
 
 from .models import CustomUser
+from .forms import RegisterForm, UserUpdateForm
 from blog.models import Question, Answer
 
 
-class RegisterForm(UserCreationForm):
-    class Meta:
-        model = CustomUser
-        fields = ("username", "email", "profile_avatar")
+class Signup(View):
+    def get(self, request, *args, **kwargs):
+        form = RegisterForm()
+        questions_trends = Question.objects.order_by('-rating', '-date')[:20]
+        return render(request, 'registration\\signup.html', {'form': form, 'questions_trends': questions_trends})
 
-
+    def post(self, request, *args, **kwargs):
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            user = CustomUser.objects.get(username=username)
+            user.profile_avatar = request.FILES['profile_avatar']
+            user.save()
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return HttpResponseRedirect('/')
+        questions_trends = Question.objects.order_by('-rating', '-date')[:20]
+        return render(request, 'registration\\signup.html', {'form': form, 'questions_trends': questions_trends})
+""" 
 def signup(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -35,8 +50,30 @@ def signup(request):
         form = RegisterForm()
     questions_trends = Question.objects.order_by('-rating', '-date')[:20]
     return render(request, 'registration\\signup.html', {'form': form, 'questions_trends': questions_trends})
+"""
 
+class Login(View):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        csrf_token = get_token(request)
+        questions_trends = Question.objects.order_by('-rating', '-date')[:20]
+        return render(None, 'registration\\login.html', {'csrf_token': csrf_token,
+                                                         'questions_trends': questions_trends})
 
+    def post(self, request, *args, **kwargs):
+        csrf_token = get_token(request)
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/')
+        questions_trends = Question.objects.order_by('-rating', '-date')[:20]
+        return render(None, 'registration\\login.html', {'csrf_token': csrf_token,
+                                                         'questions_trends': questions_trends})
+
+"""      
 def login_user(request):
     logout(request)
     csrf_token = get_token(request)
@@ -51,18 +88,11 @@ def login_user(request):
     questions_trends = Question.objects.order_by('-rating', '-date')[:20]
     return render(None, 'registration\\login.html', {'csrf_token': csrf_token,
                                                      'questions_trends': questions_trends})
-
+"""
 
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect('/')
-
-
-class UserUpdateForm(forms.ModelForm):
-    class Meta:
-        model = CustomUser
-        exclude = ('username', 'password', 'first_name', 'is_superuser', 'date_joined', 'user_permissions',
-                   'last_name', 'is_staff', 'is_active', 'last_login', 'groups')
 
 
 def updateuser(request, pk):
