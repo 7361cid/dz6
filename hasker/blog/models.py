@@ -25,7 +25,10 @@ class Question(models.Model):
     rating = models.IntegerField(default=0)
 
     def get_absolute_url(self):
-        return "/blog/question_list/%i/" % self.id
+        return f"/blog/question_list/{self.id}/"
+
+    def get_top20(self):
+        return Question.objects.order_by('-rating', '-date')[:20]
 
 
 class Answer(models.Model):

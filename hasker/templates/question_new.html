@@ -18,8 +18,8 @@
     <tr>
         <td class="table_column">
                 {% if user.is_authenticated %}
-                    {% if user.profile_pic %}
-                        <img src="{{ user.profile_pic.url }}" height=35 width=35>
+                    {% if user.profile_avatar %}
+                        <img src="{{ user.profile_avatar.url }}" height=35 width=35>
                     {% endif %}
                   <div class="login"><a href="{% url 'logout' %}"><img src="/media/images/logout.png" alt="Whitesquare logo"></a>  <a href="{% url 'user' pk=user.pk %}">Your page </a></div>
                 {% else %}

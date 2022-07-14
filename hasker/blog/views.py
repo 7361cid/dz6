@@ -22,7 +22,7 @@ def question_with_answers_view(request, pk, page=1):
     else:
         form = AskForm()
     context['form'] = form
-    questions_trends = Question.objects.order_by('-rating', '-date')[:20]
+    questions_trends = Question.get_top20()
     context['questions_trends'] = questions_trends
     return render(request, 'question.html', context=context)
 
@@ -89,7 +89,7 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        questions_trends = Question.objects.order_by('-rating', '-date')[:20]
+        questions_trends = Question.get_top20()
         ctx['questions_trends'] = questions_trends
         return ctx
 
