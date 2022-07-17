@@ -5,7 +5,8 @@ from django.db.models import Q
 from django.middleware.csrf import get_token
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
-from django.views.generic.base import View, ListView
+from django.views.generic.base import View
+from django.views.generic.list import ListView
 
 from .models import CustomUser
 from .forms import RegisterForm, UserUpdateForm
@@ -66,8 +67,11 @@ class UpdateUser(View):
         page_user = get_object_or_404(CustomUser, id=pk)
         form = UserUpdateForm()
         questions_trends = Question.get_top20()
-        return render(request, 'user_profile.html', {'form': form, 'page_user': page_user,
-                                                     'questions_trends': questions_trends})
+        context = {'form': form, 'page_user': page_user, 'questions_trends': questions_trends}
+        if request.user.is_authenticated:
+            context['user_avatar'] = CustomUser.get_avatar(request.user.pk)
+        context['page_user_avatar'] = CustomUser.get_avatar(page_user.pk)
+        return render(request, 'user_profile.html', context)
 
     def post(self, request, pk, *args, **kwargs):
         page_user = get_object_or_404(CustomUser, id=pk)
@@ -82,8 +86,11 @@ class UpdateUser(View):
 
             render(request, 'user_profile.html', {'form': form, 'page_user': page_user})
         questions_trends = Question.get_top20()
-        return render(request, 'user_profile.html', {'form': form, 'page_user': page_user,
-                                                     'questions_trends': questions_trends})
+        context = {'form': form, 'page_user': page_user, 'questions_trends': questions_trends}
+        if request.user.is_authenticated:
+            context['user_avatar'] = CustomUser.get_avatar(request.user.pk)
+        context['page_user_avatar'] = CustomUser.get_avatar(page_user.pk)
+        return render(request, 'user_profile.html', context)
 
 
 class MainPage(ListView):
@@ -118,5 +125,7 @@ class MainPage(ListView):
             'questions_trends': questions_trends,
             'paginator': paginator.page(pk)
         }
+        if request.user.is_authenticated:
+            context['user_avatar'] = CustomUser.get_avatar(request.user.pk)
 
         return render(request, 'home.html', context=context)

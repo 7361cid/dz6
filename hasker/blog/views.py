@@ -1,10 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.urls import reverse
 
+from users.models import CustomUser
 from .models import Question, Answer, Vote, VoteAnswer
 from .forms import AskForm, QuestionForm, VoteForm, VoteAnswerForm
 
@@ -12,6 +14,9 @@ from .forms import AskForm, QuestionForm, VoteForm, VoteAnswerForm
 def question_with_answers_view(request, pk, page=1):
     question = Question.objects.get(pk=pk)
     answers = Answer.objects.filter(question_pk=pk).order_by('-rating', '-date')
+    question.author.profile_avatar = CustomUser.get_avatar(question.author.pk)
+    for a in answers:
+        a.author.profile_avatar = CustomUser.get_avatar(a.author.pk)
     paginator = Paginator(answers, 30)
     context = {'question': question, 'answers': answers, 'paginator': paginator.page(page)}
     if request.method == 'POST':
@@ -44,7 +49,7 @@ def vote_for_question(request, pk):
                 updating_vote = Vote.objects.get(question_pk=pk, user=vote.user)
                 updating_vote.set_vote(question_pk=pk, vote=vote.vote)
 
-    return redirect(f'/blog/question_list/{pk}')
+    return HttpResponseRedirect(reverse('question', args=[pk]))
 
 
 @login_required
@@ -64,7 +69,7 @@ def vote_for_answer(request, pk, pk2):
                 updating_vote = VoteAnswer.objects.get(answer_pk=pk2, user=vote.user)
                 updating_vote.set_vote(answer_pk=pk2, vote=vote.vote)
 
-    return redirect(f'/blog/question_list/{pk}')
+    return HttpResponseRedirect(reverse('question', args=[pk]))
 
 
 @login_required
@@ -74,7 +79,7 @@ def make_answer_right(request, pk, pk2):
         answer.right = True
         answer.save()
 
-    return redirect(f'/blog/question_list/{pk}')
+    return HttpResponseRedirect(reverse('question', args=[pk]))
 
 
 class QuestionCreateView(LoginRequiredMixin, CreateView):

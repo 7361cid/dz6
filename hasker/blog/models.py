@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 
 from users.models import CustomUser
 from django.conf import settings
@@ -27,8 +27,19 @@ class Question(models.Model):
     def get_absolute_url(self):
         return f"/blog/question_list/{self.id}/"
 
-    def get_top20(self):
+    @staticmethod
+    def get_top20():
         return Question.objects.order_by('-rating', '-date')[:20]
+
+    @staticmethod
+    def change_rating(question_pk, vote):
+        with transaction.atomic():
+            question = Question.objects.get(pk=question_pk)
+            if vote:
+                question.rating += 1
+            elif vote is False:
+                question.rating -= 1
+            question.save()
 
 
 class Answer(models.Model):
@@ -42,23 +53,15 @@ class Answer(models.Model):
     question_pk = models.IntegerField()
     rating = models.IntegerField(default=0)
 
-
-def change_rating(question_pk, vote):
-    question = Question.objects.get(pk=question_pk)
-    if vote:
-        question.rating += 1
-    elif vote is False:
-        question.rating -= 1
-    question.save()
-
-
-def change_rating_answer(answer_pk, vote):
-    answer = Answer.objects.get(pk=answer_pk)
-    if vote:
-        answer.rating += 1
-    elif vote is False:
-        answer.rating -= 1
-    answer.save()
+    @staticmethod
+    def change_rating(answer_pk, vote):
+        with transaction.atomic():
+            answer = Answer.objects.get(pk=answer_pk)
+            if vote:
+                answer.rating += 1
+            elif vote is False:
+                answer.rating -= 1
+            answer.save()
 
 
 class Vote(models.Model):
@@ -79,7 +82,7 @@ class Vote(models.Model):
 
         self.save(question_pk)
 
-        change_rating(question_pk=question_pk, vote=self.vote)
+        Question.change_rating(question_pk=question_pk, vote=self.vote)
 
 
 class VoteAnswer(models.Model):
@@ -100,4 +103,4 @@ class VoteAnswer(models.Model):
 
         self.save(answer_pk)
 
-        change_rating_answer(answer_pk=answer_pk, vote=self.vote)
+        Answer.change_rating(answer_pk=answer_pk, vote=self.vote)

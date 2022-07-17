@@ -6,7 +6,7 @@
 <table>
         <tr>
             <td class="table_column">
-                <a id="logo" href="/"><img src="/media/images/logo.png" alt="Whitesquare logo"></a>
+                <a id="logo" href="/"><img src="/static/images/logo.png" alt="Whitesquare logo"></a>
             </td>
             <td class="table_column">
                 <form name="search" action="/" method="get">
@@ -25,10 +25,8 @@
     <tr>
         <td class="table_column">
                 {% if user.is_authenticated %}
-                    {% if user.profile_avatar %}
-                        <img src="{{ user.profile_avatar.url }}" height=35 width=35>
-                    {% endif %}
-                  <div class="login"><a href="{% url 'logout' %}"><img src="/media/images/logout.png" alt="Whitesquare logo"></a>  <a href="{% url 'user' pk=user.pk %}">Your page </a></div>
+                        <img src="{{ user_avatar }}" height=35 width=35>
+                  <div class="login"><a href="{% url 'logout' %}"><img src="/static/images/logout.png" alt="Whitesquare logo"></a>  <a href="{% url 'user' pk=user.pk %}">Your page </a></div>
                 {% else %}
                   <div class="login"><a id="logout" href="{% url 'login' %}">Log In</a> <button onclick="window.location.href = '{% url 'signup' %}';">Sign up</button></div>
                 {% endif %}
