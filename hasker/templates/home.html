@@ -49,7 +49,7 @@
              </td>
     </table>
     <table class="table_questions">
-        {% for q in paginator.object_list %}
+        {% for q in page_obj.object_list %}
             <tr>
                 <td class="table_question_data">
                     <p>{{ q.rating }}</p>
@@ -84,17 +84,17 @@
 
 </div>
     <ul class="pagination">
-    {% if paginator.has_previous %}
+    {% if page_obj.has_previous %}
         <li>
-            <span><a href="/home/{{ paginator.previous_page_number }}">Previous</a></span>
+            <span><a href="/home/{{ page_obj.previous_page_number }}">Previous</a></span>
         </li>
     {% endif %}
         <li class="pagination">
-            <span>Page {{ paginator.number }} of {{ paginator.paginator.num_pages }}.</span>
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
         </li>
-    {% if paginator.has_next %}
+    {% if page_obj.has_next %}
         <li class="pagination">
-            <span><a href="/home/{{ paginator.next_page_number }}">Next</a></span>
+            <span><a href="/home/{{ page_obj.next_page_number }}/">Next</a></span>
         </li>
     {% endif %}
     </ul>

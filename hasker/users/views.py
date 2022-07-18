@@ -94,6 +94,9 @@ class UpdateUser(View):
 
 
 class MainPage(ListView):
+    paginate_by = 20
+    model = Question
+
     def get(self, request, pk=1, tag='', sort=1, *args, **kwargs):
         search = request.GET.get('q')
         if sort == 1:
@@ -113,18 +116,19 @@ class MainPage(ListView):
             else:
                 questions = Question.objects.all().order_by(order_by)
 
-        paginator = Paginator(questions, 20)
         questions_trends = Question.get_top20()
         answers = {}
         for q in questions:
             answers[q.pk] = len(Answer.objects.filter(question_pk=q.pk))
-
-        context = {
-            'answers': answers,  # Количество овтетов для каждого вопроса
-            'questions': questions,
-            'questions_trends': questions_trends,
-            'paginator': paginator.page(pk)
-        }
+        self.object_list = questions
+        context = self.get_context_data()
+        print(f"Log here {type(context['page_obj'])} \n {type(context['paginator'])}")
+        if pk > 1:
+            print(f"Log here {type(context['page_obj'])} \n {type(context['paginator'])}")
+            context['page_obj'] = context['paginator'].page(pk)
+        context['answers'] = answers  # Количество овтетов для каждого вопроса
+        context['questions'] = questions
+        context['questions_trends'] = questions_trends
         if request.user.is_authenticated:
             context['user_avatar'] = CustomUser.get_avatar(request.user.pk)
 
