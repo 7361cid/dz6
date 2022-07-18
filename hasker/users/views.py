@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.core.paginator import Paginator
 from django.db.models import Q
 from django.middleware.csrf import get_token
 from django.contrib.auth import authenticate, login, logout
@@ -122,9 +121,7 @@ class MainPage(ListView):
             answers[q.pk] = len(Answer.objects.filter(question_pk=q.pk))
         self.object_list = questions
         context = self.get_context_data()
-        print(f"Log here {type(context['page_obj'])} \n {type(context['paginator'])}")
         if pk > 1:
-            print(f"Log here {type(context['page_obj'])} \n {type(context['paginator'])}")
             context['page_obj'] = context['paginator'].page(pk)
         context['answers'] = answers  # Количество овтетов для каждого вопроса
         context['questions'] = questions
