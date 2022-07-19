@@ -5,7 +5,7 @@
 <table>
         <tr>
             <td class="table_column">
-                <a id="logo" href="/"><img src="/static/images/logo.png" alt="Whitesquare logo"></a>
+                <a id="logo" href="{% url 'home' %}"><img src="/static/images/logo.png" alt="Whitesquare logo"></a>
             </td>
             <td class="table_column">
             </td>
@@ -76,7 +76,7 @@
         </tr>
     </table>
 
-    {% for a in paginator.object_list %}
+    {% for a in page_obj.object_list %}
     <table>
             <tr>
                 {% if a.right %}
@@ -119,17 +119,17 @@
     {% endfor %}
 
     <ul class="pagination">
-                    {% if paginator.has_previous %}
+                    {% if page_obj.has_previous %}
                         <li>
-                            <span><a href="/blog/question_list/{{ question.pk }}/{{ paginator.previous_page_number }}">Previous</a></span>
+                            <span><a href="{% url 'question' pk=question.pk page=page_obj.previous_page_number %}">Previous</a></span>
                         </li>
                     {% endif %}
                         <li class="pagination">
-                            <span>Page {{ paginator.number }} of {{ paginator.paginator.num_pages }}.</span>
+                            <span>Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
                         </li>
-                    {% if paginator.has_next %}
+                    {% if page_obj.has_next %}
                         <li class="pagination">
-                            <span><a href="/blog/question_list/{{ question.pk }}/{{ paginator.next_page_number }}">Next</a></span>
+                            <span><a href="{% url 'question' pk=question.pk page=page_obj.next_page_number %}">Next</a></span>
                         </li>
                     {% endif %}
     </ul>

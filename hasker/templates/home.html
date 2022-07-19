@@ -6,7 +6,7 @@
 <table>
         <tr>
             <td class="table_column">
-                <a id="logo" href="/"><img src="/static/images/logo.png" alt="Whitesquare logo"></a>
+                <a id="logo" href="{% url 'home' %}"><img src="/static/images/logo.png" alt="Whitesquare logo"></a>
             </td>
             <td class="table_column">
                 <form name="search" action="/" method="get">
@@ -86,7 +86,7 @@
     <ul class="pagination">
     {% if page_obj.has_previous %}
         <li>
-            <span><a href="/home/{{ page_obj.previous_page_number }}">Previous</a></span>
+            <span><a href="{% url 'home' pk=page_obj.previous_page_number %}">Previous</a></span>
         </li>
     {% endif %}
         <li class="pagination">
@@ -94,7 +94,7 @@
         </li>
     {% if page_obj.has_next %}
         <li class="pagination">
-            <span><a href="/home/{{ page_obj.next_page_number }}/">Next</a></span>
+            <span><a href="{% url 'home' pk=page_obj.next_page_number %}">Next</a></span>
         </li>
     {% endif %}
     </ul>

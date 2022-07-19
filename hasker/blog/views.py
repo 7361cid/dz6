@@ -5,31 +5,51 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.urls import reverse
-
+from django.views.generic.list import ListView
 from users.models import CustomUser
 from .models import Question, Answer, Vote, VoteAnswer
 from .forms import AskForm, QuestionForm, VoteForm, VoteAnswerForm
 
 
-def question_with_answers_view(request, pk, page=1):
-    question = Question.objects.get(pk=pk)
-    answers = Answer.objects.filter(question_pk=pk).order_by('-rating', '-date')
-    question.author.profile_avatar = CustomUser.get_avatar(question.author.pk)
-    for a in answers:
-        a.author.profile_avatar = CustomUser.get_avatar(a.author.pk)
-    paginator = Paginator(answers, 30)
-    context = {'question': question, 'answers': answers, 'paginator': paginator.page(page)}
-    if request.method == 'POST':
+class QuestionView(ListView):
+    paginate_by = 30
+    model = Answer
+
+    def get(self, request, pk,  *args, page=1, **kwargs):
+        question = Question.objects.get(pk=pk)
+        answers = Answer.objects.filter(question_pk=pk).order_by('-rating', '-date')
+        question.author.profile_avatar = CustomUser.get_avatar(question.author.pk)
+        for a in answers:
+            a.author.profile_avatar = CustomUser.get_avatar(a.author.pk)
+
+        self.object_list = answers
+        context = self.get_context_data()
+        context['question'] = question
+        context['answers'] = answers
+        if page > 1:
+            context['page_obj'] = context['paginator'].page(page)
+        form = AskForm()
+        context['form'] = form
+        questions_trends = Question.get_top20()
+        context['questions_trends'] = questions_trends
+        return render(request, 'question.html', context=context)
+
+    def post(self, request, pk, *args, page=1, **kwargs):
+        question = Question.objects.get(pk=pk)
+        answers = Answer.objects.filter(question_pk=pk).order_by('-rating', '-date')
+        question.author.profile_avatar = CustomUser.get_avatar(question.author.pk)
+        for a in answers:
+            a.author.profile_avatar = CustomUser.get_avatar(a.author.pk)
+        paginator = Paginator(answers, 30)
+        context = {'question': question, 'answers': answers, 'paginator': paginator.page(page)}
         form = AskForm(request.POST)
         if form.is_valid():
             answer = Answer(content=form.cleaned_data['content'], author=request.user, question_pk=pk)
             answer.save()
-    else:
-        form = AskForm()
-    context['form'] = form
-    questions_trends = Question.get_top20()
-    context['questions_trends'] = questions_trends
-    return render(request, 'question.html', context=context)
+        context['form'] = form
+        questions_trends = Question.get_top20()
+        context['questions_trends'] = questions_trends
+        return render(request, 'question.html', context=context)
 
 
 @login_required
