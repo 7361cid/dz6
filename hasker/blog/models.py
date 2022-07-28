@@ -1,5 +1,5 @@
 from django.db import models, transaction
-
+from django.urls import reverse
 from users.models import CustomUser
 from django.conf import settings
 
@@ -23,7 +23,8 @@ class Question(models.Model):
     rating = models.IntegerField(default=0)
 
     def get_absolute_url(self):
-        return f"/blog/question_list/{self.id}/"
+        reverse('question', args=[self.id])
+        return reverse('question', args=[self.id])
 
     @staticmethod
     def get_top20():

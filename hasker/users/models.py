@@ -7,10 +7,9 @@ class CustomUser(AbstractUser):
     profile_avatar = models.ImageField(null=True, blank=True, upload_to="images/profile/",
                                        default='images/deafult-profile-image.png')
 
-    @staticmethod
-    def get_avatar(pk):
-        try:
-            return CustomUser.objects.get(pk=pk).profile_avatar
-        except CustomUser.DoesNotExist:
+    def get_avatar(self):
+        if self.profile_avatar:
+            return self.profile_avatar
+        else:
             return 'images/deafult-profile-image.png'
 

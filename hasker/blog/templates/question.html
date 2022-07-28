@@ -59,14 +59,12 @@
         </tr>
         <tr>
             <td>
-                <p><a href="{% url 'home' tag=question.tag %}">{{ question.tag }}</a></p>
+                {% if question.tags.all %}
+                        {% for tag in question.tags.all %}
+                            <p><button onclick="window.location.href = '{% url 'home' tag=tag %}';">{{ tag }}</button></p>
+                        {% endfor %}
+                {% endif %}
             </td>
-            {% if q.tag2 %}
-                <p><button onclick="window.location.href = '{% url 'home' tag=q.tag2 %}';">{{ question.tag2 }}</button></p>
-            {% endif %}
-            {% if q.tag3 %}
-                <p><button onclick="window.location.href = '{% url 'home' tag=q.tag3 %}';">{{ question.tag3 }}</button></p>
-            {% endif %}
             <td>
                 <p><a href="{% url 'user' pk=question.author.pk %}">{{ question.author }}</a></p>
             </td>

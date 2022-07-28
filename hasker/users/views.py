@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.db.models import Q
 from django.middleware.csrf import get_token
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.views.generic.base import View
 from django.views.generic.list import ListView
 
@@ -29,7 +29,7 @@ class Signup(View):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return HttpResponseRedirect('/')
+            return redirect('/')
         questions_trends = Question.get_top20()
         return render(request, 'registration\\signup.html', {'form': form, 'questions_trends': questions_trends})
 
@@ -50,7 +50,7 @@ class Login(View):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/')
+                return redirect('/')
         questions_trends = Question.get_top20()
         return render(None, 'registration\\login.html', {'csrf_token': csrf_token,
                                                          'questions_trends': questions_trends})
@@ -58,7 +58,7 @@ class Login(View):
 
 def logout_user(request):
     logout(request)
-    return HttpResponseRedirect('/')
+    return redirect('/')
 
 
 class UpdateUser(View):
@@ -68,8 +68,8 @@ class UpdateUser(View):
         questions_trends = Question.get_top20()
         context = {'form': form, 'page_user': page_user, 'questions_trends': questions_trends}
         if request.user.is_authenticated:
-            context['user_avatar'] = CustomUser.get_avatar(request.user.pk)
-        context['page_user_avatar'] = CustomUser.get_avatar(page_user.pk)
+            context['user_avatar'] = request.user.get_avatar()
+        context['page_user_avatar'] = page_user.get_avatar()
         return render(request, 'user_profile.html', context)
 
     def post(self, request, pk, *args, **kwargs):
@@ -87,8 +87,8 @@ class UpdateUser(View):
         questions_trends = Question.get_top20()
         context = {'form': form, 'page_user': page_user, 'questions_trends': questions_trends}
         if request.user.is_authenticated:
-            context['user_avatar'] = CustomUser.get_avatar(request.user.pk)
-        context['page_user_avatar'] = CustomUser.get_avatar(page_user.pk)
+            context['user_avatar'] = request.user.get_avatar()
+        context['page_user_avatar'] = page_user.get_avatar()
         return render(request, 'user_profile.html', context)
 
 
@@ -128,6 +128,6 @@ class MainPage(ListView):
         context['questions'] = questions
         context['questions_trends'] = questions_trends
         if request.user.is_authenticated:
-            context['user_avatar'] = CustomUser.get_avatar(request.user.pk)
+            context['user_avatar'] = request.user.get_avatar()
 
         return render(request, 'home.html', context=context)

@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
-from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -18,9 +18,9 @@ class QuestionView(ListView):
     def get(self, request, pk,  *args, page=1, **kwargs):
         question = Question.objects.get(pk=pk)
         answers = Answer.objects.filter(question_pk=pk).order_by('-rating', '-date')
-        question.author.profile_avatar = CustomUser.get_avatar(question.author.pk)
+        question.author.profile_avatar = question.author.get_avatar()
         for a in answers:
-            a.author.profile_avatar = CustomUser.get_avatar(a.author.pk)
+            a.author.profile_avatar = a.author.get_avatar()
 
         self.object_list = answers
         context = self.get_context_data()
@@ -37,9 +37,9 @@ class QuestionView(ListView):
     def post(self, request, pk, *args, page=1, **kwargs):
         question = Question.objects.get(pk=pk)
         answers = Answer.objects.filter(question_pk=pk).order_by('-rating', '-date')
-        question.author.profile_avatar = CustomUser.get_avatar(question.author.pk)
+        question.author.profile_avatar = question.author.get_avatar()
         for a in answers:
-            a.author.profile_avatar = CustomUser.get_avatar(a.author.pk)
+            a.author.profile_avatar = question.author.get_avatar()
         paginator = Paginator(answers, 30)
         context = {'question': question, 'answers': answers, 'paginator': paginator.page(page)}
         form = AskForm(request.POST)
@@ -69,7 +69,7 @@ def vote_for_question(request, pk):
                 updating_vote = Vote.objects.get(question_pk=pk, user=vote.user)
                 updating_vote.set_vote(question_pk=pk, vote=vote.vote)
 
-    return HttpResponseRedirect(reverse('question', args=[pk]))
+    return redirect((reverse('question', args=[pk])))
 
 
 @login_required
@@ -89,7 +89,7 @@ def vote_for_answer(request, pk, pk2):
                 updating_vote = VoteAnswer.objects.get(answer_pk=pk2, user=vote.user)
                 updating_vote.set_vote(answer_pk=pk2, vote=vote.vote)
 
-    return HttpResponseRedirect(reverse('question', args=[pk]))
+    return redirect((reverse('question', args=[pk])))
 
 
 @login_required
@@ -99,7 +99,7 @@ def make_answer_right(request, pk, pk2):
         answer.right = True
         answer.save()
 
-    return HttpResponseRedirect(reverse('question', args=[pk]))
+    return redirect((reverse('question', args=[pk])))
 
 
 class QuestionCreateView(LoginRequiredMixin, CreateView):
