@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django.views.generic.base import View
 from django.views.generic.list import ListView
+from django.views.generic.edit import FormView
 
 from .models import CustomUser
 from .forms import RegisterForm, UserUpdateForm
@@ -56,12 +57,17 @@ class Login(View):
                                                          'questions_trends': questions_trends})
 
 
-def logout_user(request):
-    logout(request)
-    return redirect('/')
+class Logout(View):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect('/')
 
 
-class UpdateUser(View):
+class UpdateUser(FormView):
+    template_name = 'user_profile.html'
+    form_class = UserUpdateForm
+    success_url = '/'
+
     def get(self, request, pk, *args, **kwargs):
         page_user = get_object_or_404(CustomUser, id=pk)
         form = UserUpdateForm()
@@ -72,24 +78,20 @@ class UpdateUser(View):
         context['page_user_avatar'] = page_user.get_avatar()
         return render(request, 'user_profile.html', context)
 
-    def post(self, request, pk, *args, **kwargs):
-        page_user = get_object_or_404(CustomUser, id=pk)
-        form = UserUpdateForm(request.POST)
-        if form.is_valid():
-            if form.data['email']:
-                page_user.email = form.cleaned_data['email']
-                page_user.save()
-            if "profile_avatar" in request.FILES.keys():
-                page_user.profile_avatar = request.FILES['profile_avatar']
-                page_user.save()
-
-            render(request, 'user_profile.html', {'form': form, 'page_user': page_user})
+    def form_valid(self, form):
+        page_user = self.request.user
+        if form.data['email']:
+            page_user.email = form.cleaned_data['email']
+            page_user.save()
+        if "profile_avatar" in self.request.FILES.keys():
+            page_user.profile_avatar = self.request.FILES['profile_avatar']
+            page_user.save()
         questions_trends = Question.get_top20()
         context = {'form': form, 'page_user': page_user, 'questions_trends': questions_trends}
-        if request.user.is_authenticated:
-            context['user_avatar'] = request.user.get_avatar()
+        if self.request.user.is_authenticated:
+            context['user_avatar'] = page_user.get_avatar()
         context['page_user_avatar'] = page_user.get_avatar()
-        return render(request, 'user_profile.html', context)
+        return render(self.request, 'user_profile.html', context)
 
 
 class MainPage(ListView):
