@@ -65,12 +65,10 @@
                 </td>
                 <td class="table_question_data">
                     <p><a href="{% url 'question' pk=q.id %}">{{ q.title }}</a></p>
-                    <p><button onclick="window.location.href = '{% url 'home' tag=q.tag %}';">{{ q.tag }}</button></p>
-                    {% if q.tag2 %}
-                        <p><button onclick="window.location.href = '{% url 'home' tag=q.tag2 %}';">{{ q.tag2 }}</button></p>
-                    {% endif %}
-                    {% if q.tag3 %}
-                        <p><button onclick="window.location.href = '{% url 'home' tag=q.tag3 %}';">{{ q.tag3 }}</button></p>
+                    {% if q.tags.all %}
+                        {% for tag in q.tags.all %}
+                            <p><button onclick="window.location.href = '{% url 'home' tag=tag %}';">{{ tag }}</button></p>
+                        {% endfor %}
                     {% endif %}
                 </td>
                 <td class="table_question_data">

@@ -1,6 +1,7 @@
 from django import forms
 
 from .models import Question, Tag, Answer, Vote, VoteAnswer
+from .fields import TagField
 
 
 class AskForm(forms.ModelForm):
@@ -11,25 +12,14 @@ class AskForm(forms.ModelForm):
         fields = ["content"]
 
 
-class TagField(forms.Field):
-    def to_python(self, value):
-        if not value:
-            return Tag.objects.create(tag="")
-        return Tag.objects.create(tag=value)
-
-    def validate(self, value):
-        tags_list = str(value).split(',')
-        if len(tags_list) > 3:
-            raise forms.ValidationError("You can't use more than 3 tags")
-        tags_list2 = list(set(tags_list))
-        if sorted(tags_list) != sorted(tags_list2):
-            raise forms.ValidationError("You use equal tags")
-
-
 class QuestionForm(forms.ModelForm):
     tag = TagField()
     title = forms.CharField(max_length=255)
     content = forms.CharField(max_length=10000)
+
+    class Meta:
+        model = Question
+        fields = ["title", "content", "tag"]
 
     def __init__(self, user, *args, **kwargs):
         self.user = user
@@ -41,26 +31,15 @@ class QuestionForm(forms.ModelForm):
         else:
             self.fields['tag'].widget.attrs['placeholder'] = 'No tags created yet'
 
-    class Meta:
-        model = Question
-        fields = ["title", "content", "tag"]
-
     def save(self):
         data = self.cleaned_data
-        tags = str(data['tag']).split(',')
-        if len(tags) == 1:
-            question = Question(title=data['title'], content=data['content'],
-                                tag=data['tag'], author=self.user)
-        elif len(tags) == 2:
-            tag2 = Tag.objects.create(tag=tags[1])
-            question = Question(title=data['title'], content=data['content'],
-                                tag=data['tag'], tag2=tag2, author=self.user)
-        else:
-            tag2 = Tag.objects.create(tag=tags[1])
-            tag3 = Tag.objects.create(tag=tags[1])
-            question = Question(title=data['title'], content=data['content'],
-                                tag=data['tag'], tag2=tag2, tag3=tag3, author=self.user)
+        question = Question(title=data['title'], content=data['content'], author=self.user)
         question.save()
+        if 'tag' in data.keys():
+            tags = str(data['tag']).split(',')
+            for tag in tags:
+                question.tags.create(tag=tag)
+                question.save()
 
 
 class VoteForm(forms.ModelForm):

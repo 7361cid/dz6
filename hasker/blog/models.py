@@ -19,9 +19,7 @@ class Question(models.Model):
     content = models.TextField(max_length=10000)
     date = models.DateTimeField(auto_now_add=True, blank=True)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
-    tag2 = models.ForeignKey(Tag, on_delete=models.PROTECT, related_name='tag2', blank=True, null=True)
-    tag3 = models.ForeignKey(Tag, on_delete=models.PROTECT, related_name='tag3', blank=True, null=True)
+    tags = models.ManyToManyField(Tag)
     rating = models.IntegerField(default=0)
 
     def get_absolute_url(self):

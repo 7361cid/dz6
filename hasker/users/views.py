@@ -103,7 +103,8 @@ class MainPage(ListView):
         else:
             order_by = "-rating"
         if tag:
-            questions = Question.objects.filter(Q(tag__tag__icontains=tag)).order_by(order_by)
+            print(f"tag {tag}")
+            questions = Question.objects.filter(Q(tags__tag__icontains=tag)).order_by(order_by)
         else:
             if search:
                 if search.startswith("tag:"):
