@@ -75,6 +75,7 @@
     </table>
 
     {% for a in page_obj.object_list %}
+    <hr>
     <table>
             <tr>
                 {% if a.right %}
@@ -108,11 +109,10 @@
                 </td>
             </tr>
             {% if user == question.author %}
-            <a href="make_answer_right/{{ answer.id }}">
+            <a href="make_answer_right/{{ a.pk }}">
             <button> This answer is right? </button>
             </a>
             {% endif %}
-        <hr>
     </table>
     {% endfor %}
 

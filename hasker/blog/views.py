@@ -6,7 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.urls import reverse
 from django.views.generic.list import ListView
-from users.models import CustomUser
+from django.views.generic.base import View
+
 from .models import Question, Answer, Vote, VoteAnswer
 from .forms import AskForm, QuestionForm, VoteForm, VoteAnswerForm
 
@@ -52,9 +53,8 @@ class QuestionView(ListView):
         return render(request, 'question.html', context=context)
 
 
-@login_required
-def vote_for_question(request, pk):
-    if request.method == 'POST':
+class VoteForQuestion(View):
+    def post(self, request, pk):
         form = VoteForm(request.POST)
         if form.is_valid():
             vote = form.save(commit=False)
@@ -69,12 +69,11 @@ def vote_for_question(request, pk):
                 updating_vote = Vote.objects.get(question_pk=pk, user=vote.user)
                 updating_vote.set_vote(question_pk=pk, vote=vote.vote)
 
-    return redirect((reverse('question', args=[pk])))
+        return redirect((reverse('question', args=[pk])))
 
 
-@login_required
-def vote_for_answer(request, pk, pk2):
-    if request.method == 'POST':
+class VoteForAnswer(View):
+    def post(self, request, pk, pk2):
         form = VoteAnswerForm(request.POST)
         if form.is_valid():
             vote = form.save(commit=False)
@@ -89,17 +88,17 @@ def vote_for_answer(request, pk, pk2):
                 updating_vote = VoteAnswer.objects.get(answer_pk=pk2, user=vote.user)
                 updating_vote.set_vote(answer_pk=pk2, vote=vote.vote)
 
-    return redirect((reverse('question', args=[pk])))
+        return redirect((reverse('question', args=[pk])))
 
 
-@login_required
-def make_answer_right(request, pk, pk2):
-    if Question.objects.get(pk=pk).author == request.user:
-        answer = Answer.objects.get(pk=pk2)
-        answer.right = True
-        answer.save()
+class RightAnswer(View):
+    def get(self, request, pk, pk2):
+        if Question.objects.get(pk=pk).author == request.user:
+            answer = Answer.objects.get(pk=pk2)
+            answer.right = True
+            answer.save()
 
-    return redirect((reverse('question', args=[pk])))
+        return redirect((reverse('question', args=[pk])))
 
 
 class QuestionCreateView(LoginRequiredMixin, CreateView):
@@ -121,4 +120,4 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.save()
 
-        return HttpResponseRedirect(self.success_url)
+        return redirect(self.success_url)
